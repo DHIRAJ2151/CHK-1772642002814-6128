@@ -1,0 +1,204 @@
+/* Minimal layout-only styles; inherits colors from global theme */
+:root {
+  /* Adjust if your navbar is taller */
+  --nav-height: 80px;
+}
+
+/* Prevent content from sitting under a fixed/sticky navbar on this page */
+body {
+  padding-top: var(--nav-height);
+  scroll-padding-top: var(--nav-height);
+}
+#map {
+  width: 100%;
+  height: 480px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Hide default Leaflet attribution bar on the map */
+.leaflet-control-container .leaflet-control-attribution {
+  display: none !important;
+}
+
+/* Prevent Leaflet zoom controls from overlapping the navbar */
+.leaflet-control-container .leaflet-top {
+  top: calc(var(--nav-height) + 8px) !important;
+}
+
+/* Spacing for bottom-right controls (used by our zoom control) */
+.leaflet-control-container .leaflet-bottom {
+  bottom: 12px !important;
+  z-index: -10;
+}
+.leaflet-control-container .leaflet-right {
+  right: 12px !important;
+  z-index: -10;
+}
+
+/* Map placeholder shown before a location is selected */
+.map-placeholder {
+  width: 100%;
+  height: 480px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f6f9f7 0%, #eef5f0 100%);
+  border: 1px dashed #b7d9c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2e7d32; /* reuse green tone */
+}
+
+.map-placeholder-inner {
+  text-align: center;
+}
+
+.map-placeholder-inner h4 {
+  margin: 0 0 6px 0;
+}
+
+.map-placeholder-inner p {
+  margin: 0 0 8px 0;
+  color: #4a4a4a;
+}
+
+.map-placeholder-inner ul {
+  margin: 0;
+  padding-left: 18px;
+  text-align: left;
+}
+
+#manual-form label {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inline toast-style alerts for nearest lab messages */
+.messages-container {
+  position: relative;
+}
+
+.messages-container .alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  font-size: 0.95rem;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+  border: 1px solid transparent;
+  animation: slideIn 200ms ease-out;
+}
+
+.messages-container .alert-info {
+  background: #e8f3ff;
+  color: #084a8c;
+  border-color: #b6dbff;
+}
+
+.messages-container .alert-success {
+  background: #eaf8ef;
+  color: #0f5b2f;
+  border-color: #c9eed7;
+}
+
+.messages-container .alert-warning {
+  background: #fff6e5;
+  color: #7a4d00;
+  border-color: #ffe1a8;
+}
+
+.messages-container .alert-error {
+  background: #ffecee;
+  color: #8a1230;
+  border-color: #ffc3cc;
+}
+
+.messages-container .alert .close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+.messages-container .alert .close-btn:hover {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Layout: controls + map in one row */
+.lab-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 12px;
+}
+
+.lab-controls {
+  flex: 0 0 360px; /* fixed-ish sidebar */
+  max-width: 420px;
+}
+
+.lab-controls-row {
+  display: flex;
+  flex-direction: column; /* stack everything in one column */
+  gap: 12px;
+  align-items: stretch; /* make children fill width */
+}
+
+.city-form-inline {
+  display: flex;
+  flex-direction: column; /* input over button */
+  gap: 8px;
+  align-items: stretch;
+}
+
+.city-form-inline input {
+  height: 38px;
+  padding: 6px 10px;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  width: 100%;
+}
+
+/* Make buttons span full width in the controls column */
+.lab-controls .btn {
+  width: 100%;
+}
+
+.lab-map {
+  flex: 1;
+  min-width: 0; /* prevent overflow */
+  margin-bottom: 10px;
+}
+
+/* Screen <= 900px: stack vertically */
+@media (max-width: 900px) {
+  .lab-row {
+    flex-direction: column;
+  }
+  .lab-controls {
+    width: 100%;
+  }
+}
+
+/* Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
