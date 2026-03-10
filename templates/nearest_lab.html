@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nearest Soil Labs - Krushi{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="{% static 'css/nearest_lab.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container" style="margin-top: 24px;">
+    
+    
+    <div class="lab-row">
+        <div class="lab-controls">
+            <div class="lab-controls-row">
+                <h2>Find Nearest Soil Testing Labs</h2>
+                <p>Use your current location or search by city.</p>
+
+                <button id="locate-btn" class="btn">Get My Location & Labs</button>
+                <span class="divider" style="text-align: center;"><b>or</b></span>
+                <form id="city-form" onsubmit="return false;" class="city-form-inline">
+                    <label for="city-name" class="sr-only">City</label>
+                    <input id="city-name" type="text" placeholder="e.g., Mumbai" required />
+                    <button id="city-submit" type="submit" class="btn">Find Labs</button>
+                </form>
+            </div>
+            <div style="text-align: center; margin-top: 16px;">
+                 <a href="{% url 'soil_analysis' %}" class="btn">Back to Soil Analysis</a>
+            </div>
+            <!-- Inline message area for status/errors (uses global alert styles) -->
+            <div id="lab-messages" class="messages-container"></div>
+        </div>
+
+        <div class="lab-map">
+            <div id="map-placeholder" class="map-placeholder">
+                <div class="map-placeholder-inner">
+                    <h4>Start searching for nearby labs</h4>
+                    <p>Use your current location or search by city.</p>
+                </div>
+            </div>
+            <div id="map" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="{% static 'js/nearest_lab.js' %}"></script>
+{% endblock %}

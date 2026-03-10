@@ -1,0 +1,157 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<div class="page-title">
+    <h2>Dashboard Analytics</h2>
+    <span><i class="fas fa-calendar-alt"></i> Today: {{ now|date:"F d, Y" }}</span>
+</div>
+
+<div class="dashboard-cards"
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px;">
+
+    <div class="card" style="border-left: 4px solid var(--primary-color);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 5px;">Total Users</p>
+                <h3 style="font-size: 1.8rem; color: var(--text-main);">{{ total_users }}</h3>
+            </div>
+            <div
+                style="background-color: var(--secondary-color); padding: 15px; border-radius: 50%; color: var(--primary-color);">
+                <i class="fas fa-users fa-lg"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--info);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 5px;">Total Products</p>
+                <h3 style="font-size: 1.8rem; color: var(--text-main);">{{ total_products }}</h3>
+            </div>
+            <div
+                style="background-color: var(--secondary-color); padding: 15px; border-radius: 50%; color: var(--info);">
+                <i class="fas fa-box fa-lg"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--warning);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 5px;">Total Orders</p>
+                <h3 style="font-size: 1.8rem; color: var(--text-main);">{{ total_orders }}</h3>
+            </div>
+            <div
+                style="background-color: var(--secondary-color); padding: 15px; border-radius: 50%; color: var(--warning);">
+                <i class="fas fa-shopping-cart fa-lg"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--success);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 5px;">Total Revenue</p>
+                <h3 style="font-size: 1.8rem; color: var(--text-main);">₹{{ total_revenue|floatformat:2 }}</h3>
+            </div>
+            <div
+                style="background-color: var(--secondary-color); padding: 15px; border-radius: 50%; color: var(--success);">
+                <i class="fas fa-rupee-sign fa-lg"></i>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Recent Activity Sections -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+
+    <!-- Recent Orders -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Recent Orders</h3>
+            <a href="{% url 'admin_orders' %}" class="btn btn-primary"
+                style="padding: 5px 10px; font-size: 0.8rem;">View All</a>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td><strong>{{ order.order_number }}</strong></td>
+                        <td>{{ order.user.username }}</td>
+                        <td>₹{{ order.total_amount }}</td>
+                        <td>
+                            <span
+                                class="badge badge-{% if order.status == 'delivered' %}success{% elif order.status == 'pending' %}warning{% elif order.status == 'cancelled' %}danger{% else %}info{% endif %}">
+                                {{ order.status|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 20px;">No recent orders found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Users -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">New Users</h3>
+            <a href="{% url 'admin_users' %}" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem;">View
+                All</a>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in recent_users %}
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="user-avatar" style="width: 25px; height: 25px; font-size: 0.8rem;">
+                                    {{ user.username|make_list|first|upper }}
+                                </div>
+                                {{ user.username }}
+                            </div>
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.is_superuser %} <span class="badge badge-danger">Admin</span>
+                            {% elif user.is_farmer %} <span class="badge badge-success">Farmer</span>
+                            {% else %} <span class="badge badge-info">User</span> {% endif %}
+                        </td>
+                        <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 20px;">No users found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

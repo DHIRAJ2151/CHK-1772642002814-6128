@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders - Krushi{% endblock %}
+
+{% block content %}
+    <!-- My Orders Header -->
+    <section class="my-orders-header">
+        <div class="container">
+            <h1>My Orders</h1>
+            <p>Track your order history and status</p>
+        </div>
+    </section>
+
+    <!-- Orders List -->
+    <section class="orders-list">
+        <div class="container">
+            {% if orders %}
+                <div class="orders-grid">
+                    {% for order in orders %}
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-number">
+                                    <h3>Order #{{ order.order_number }}</h3>
+                                    <span class="order-date">{{ order.created_at|date:"F j, Y" }}</span>
+                                </div>
+                                <div class="order-status status-{{ order.status }}">
+                                    {{ order.get_status_display }}
+                                </div>
+                            </div>
+                            
+                            <div class="order-items">
+                                {% for item in order.items.all|slice:":3" %}
+                                    <div class="order-item">
+                                        
+                                        <div class="item-details">
+                                            <h4>{{ item.product.name }}</h4>
+                                            <p class="item-category">{{ item.product.category.name }}</p>
+                                            <p class="item-price">₹{{ item.price }} x {{ item.quantity }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% if order.items.count > 3 %}
+                                    <div class="more-items">
+                                        <p>+{{ order.items.count|add:"-3" }} more items</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="order-footer">
+                                <div class="order-total">
+                                    <span>Total:</span>
+                                    <strong>₹{{ order.total_amount }}</strong>
+                                </div>
+                                <div class="order-actions">
+                                    {% if order.status == 'pending' or order.status == 'confirmed' %}
+                                        <form method="post" action="{% url 'cancel_order' order.id %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-cancel" style="background-color: #ea071e; color: white;">
+                                                <i class="fas fa-times-circle"></i> Cancel Order
+                                            </button>
+                                        </form>
+                                    {% elif order.status == 'cancelled' %}
+                                        <span class="cancelled-badge">
+                                            <i class="fas fa-ban"></i> Cancelled
+                                        </span>
+                                    {% elif order.status == 'delivered' %}
+                                        <span class="delivered-badge">
+                                            <i class="fas fa-check-circle"></i> Delivered
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-orders">
+                    <div class="no-orders-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h3>No orders yet</h3>
+                    <p>You haven't placed any orders yet. Start shopping to see your order history here.</p>
+                    <a href="{% url 'shop' %}" class="btn btn-primary">Start Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

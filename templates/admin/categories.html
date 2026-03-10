@@ -1,0 +1,109 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<div class="page-title">
+    <h2>Category Management</h2>
+    <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary" onclick="document.getElementById('addCategoryModal').style.display='block'">
+            <i class="fas fa-plus"></i> Add Category
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Categories</h3>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Products Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>{{ category.id }}</td>
+                    <td><strong>{{ category.name }}</strong></td>
+                    <td style="color: var(--text-light);">{{ category.description|truncatewords:10 }}</td>
+                    <td><span class="badge badge-info">{{ category.products.count }} Products</span></td>
+                    <td>
+                        <form action="{% url 'admin_category_delete' category.id %}" method="POST"
+                            style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete {{ category.name|escapejs }}? This will affect all associated products.')"
+                                style="padding: 5px 10px;" title="Delete Category">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 30px;">No categories found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
+        <div style="display: flex; gap: 5px;">
+            {% if page_obj.has_previous %}
+            <a href="?page=1" class="btn"
+                style="background-color: var(--secondary-color); color: var(--text-main);">&laquo;</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn"
+                style="background-color: var(--secondary-color); color: var(--text-main);">&lsaquo;</a>
+            {% endif %}
+
+            <span class="btn" style="background-color: var(--primary-color); color: white;">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn"
+                style="background-color: var(--secondary-color); color: var(--text-main);">&rsaquo;</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn"
+                style="background-color: var(--secondary-color); color: var(--text-main);">&raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+<!-- Add Category Modal -->
+<div id="addCategoryModal" class="modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: var(--text-main);">Add New Category</h3>
+            <span style="font-size: 1.5rem; cursor: pointer; color: var(--text-light);"
+                onclick="document.getElementById('addCategoryModal').style.display='none'">&times;</span>
+        </div>
+        <form action="{% url 'admin_category_create' %}" method="POST">
+            {% csrf_token %}
+            <div>
+                <label for="name"
+                    style="display: block; margin-bottom: 5px; color: var(--text-main); font-weight: 500;">Category Name
+                    <span style="color: var(--danger);">*</span></label>
+                <input type="text" id="name" name="name" class="form-control" required placeholder="e.g. Fertilizers">
+            </div>
+            <div>
+                <label for="description"
+                    style="display: block; margin-bottom: 5px; color: var(--text-main); font-weight: 500;">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="3"
+                    placeholder="Category description..."></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button type="button" class="btn btn-warning"
+                    onclick="document.getElementById('addCategoryModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Category</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

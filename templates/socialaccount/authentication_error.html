@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Authentication Error - Krushi{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #f44336;"></i>
+        </div>
+        <h2 style="text-align: center;">Authentication Error</h2>
+        <div class="alert alert-error" style="margin: 20px 0;">
+            <p>An error occurred while trying to authenticate with Google.</p>
+            {% if exception %}
+            <p style="font-size: 14px; color: #666;">{{ exception }}</p>
+            {% endif %}
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'login' %}" class="btn auth-btn" style="display: inline-block; width: auto; padding: 12px 30px;">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<div class="page-title">
+    <h2>User Management</h2>
+    <div style="display: flex; gap: 10px;">
+        <form method="GET" style="display: flex; gap: 5px;">
+            <input type="text" name="search" value="{{ search_query }}" class="form-control"
+                placeholder="Search users..." style="margin-bottom: 0; padding: 6px 12px; width: 250px;">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Users</h3>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="user-avatar" style="width: 30px; height: 30px;">
+                                {{ user.username|make_list|first|upper }}
+                            </div>
+                            <div>
+                                <strong>{{ user.username }}</strong>
+                                {% if user.phone %}<br><small style="color: var(--text-light);"><i
+                                        class="fas fa-phone"></i> {{ user.phone }}</small>{% endif %}
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_superuser %} <span class="badge badge-danger">Admin</span>
+                        {% elif user.is_farmer %} <span class="badge badge-success">Farmer</span>
+                        {% else %} <span class="badge badge-info">User</span> {% endif %}
+                    </td>
+                    <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                    <td>
+                        {% if user.is_active %}
+                        <span class="badge badge-success">Active</span>
+                        {% else %}
+                        <span class="badge badge-danger">Blocked</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{% url 'admin_user_toggle' user.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            {% if user.is_active %}
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to block this user?')"
+                                style="padding: 5px 10px;" title="Block User">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                            {% else %}
+                            <button type="submit" class="btn btn-success"
+                                onclick="return confirm('Are you sure you want to unblock this user?')"
+                                style="padding: 5px 10px;" title="Unblock User">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px;">No users found matching your search.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
+        <div style="display: flex; gap: 5px;">
+            {% if page_obj.has_previous %}
+            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" class="btn"
+                style="background-color: var(--secondary-color); color: var(--text-main);">&laquo;</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="btn" style="background-color: var(--secondary-color); color: var(--text-main);">&lsaquo;</a>
+            {% endif %}
+
+            <span class="btn" style="background-color: var(--primary-color); color: white;">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="btn" style="background-color: var(--secondary-color); color: var(--text-main);">&rsaquo;</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="btn" style="background-color: var(--secondary-color); color: var(--text-main);">&raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

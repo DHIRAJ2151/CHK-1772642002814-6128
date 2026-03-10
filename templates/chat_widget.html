@@ -1,0 +1,78 @@
+{% load static %}
+<!-- Chat Toggle Button -->
+<button id="chat-toggle" title="Chat with KrushiBot">
+    <img class="chatbot-logo" src="{% static 'images/krushi-chatbot-logo.png' %}" alt="Krushi Chatbot" />
+</button>
+
+<!-- Chat Container -->
+<div id="chat-container" class="hidden">
+    <div class="chat-header">
+        <div class="header-title">
+            <i class="fas fa-robot"></i>
+            <span>KrushiBot Assistant</span>
+        </div>
+        <div class="chat-header-controls">
+            <!-- <button id="toggle-speech" class="header-btn" title="Enable Text-to-Speech">
+                <i class="fas fa-volume-mute"></i>
+            </button> -->
+            <button id="close-chat" class="header-btn" title="Close Chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="chat-messages">
+
+    </div>
+
+    <div class="chat-input-container">
+        <!-- <button id="voice-input-button" class="voice-btn" title="Click to speak">
+            <i class="fas fa-microphone"></i>
+            <span class="voice-pulse"></span>
+        </button> -->
+        <input type="text" id="chat-input" placeholder="Type Here to Ask..." autocomplete="off">
+        <button id="send-button" title="Send message">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <div id="voice-status" class="voice-status hidden">
+        <div class="voice-status-content">
+            <i class="fas fa-microphone"></i>
+            <span>Listening...</span>
+            <div class="voice-wave">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load chat CSS and JS -->
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+<script src="{% static 'js/voice-diagnostic.js' %}"></script>
+<script src="{% static 'js/chat.js' %}"></script>
+
+<script>
+    // Add close button functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const closeButton = document.getElementById('close-chat');
+        const chatContainer = document.getElementById('chat-container');
+
+        if (closeButton && chatContainer) {
+            closeButton.addEventListener('click', function () {
+                chatContainer.classList.add('hidden');
+            });
+        }
+
+        // Run diagnostic on page load (only in console)
+        if (window.location.search.includes('debug=voice')) {
+            setTimeout(() => {
+                console.log('🔍 Running voice diagnostic...');
+                runVoiceDiagnostic();
+            }, 1000);
+        }
+    });
+</script>

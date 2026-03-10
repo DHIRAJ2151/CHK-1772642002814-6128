@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop - Krushi{% endblock %}
+
+{% block body_class %}page-shop{% endblock %}
+
+{% block content %}
+    <!-- Shop Header -->
+    <section class="shop-header">
+        <div class="container">
+            <h1>🌾 Farming Equipment & Supplies</h1>
+            <p>Discover high-quality farming tools, organic fertilizers, premium seeds, and expert advice to maximize your agricultural productivity and harvest success.</p>
+            <div class="shop-stats" style="display: flex; justify-content: center; gap: 40px; margin-top: 30px; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #fff;">{{ products.paginator.count }}+</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Products</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #fff;">{{ categories.count }}+</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Categories</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #fff;">100%</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Quality Assured</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+                <!-- Search and Filter Tools -->
+            <div class="shop-tools">
+                <form method="get" class="search-form">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}">
+                    </div>
+                    <br>
+                    <div class="filter-btns">
+                        <button type="submit" name="category" value="all" class="filter-btn {% if category_filter == 'all' or not category_filter %}active{% endif %}">All</button>
+                        {% for category in categories %}
+                            <button type="submit" name="category" value="{{ category.name }}" class="filter-btn {% if category_filter == category.name %}active{% endif %}">{{ category.name }}</button>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <div class="sort-options">
+                        <select name="sort" onchange="this.form.submit()">
+                            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                            <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Highest Rated</option>
+                            <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name A-Z</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Products Grid -->
+            {% if products %}
+                <div class="shop-grid">
+                    {% for product in products %}
+                        <div class="product-card" data-category="{{ product.category.name }}">
+                            <div class="product-img">
+                                <img src="{{ product.get_image_src }}" alt="{{ product.name }}">
+                                
+                                <!-- Stock Status Badge -->
+                                {% if product.stock_quantity == 0 %}
+                                    <span class="stock-badge out-of-stock">
+                                        <i class="fas fa-times-circle"></i> Out of Stock
+                                    </span>
+                                {% elif product.stock_quantity < 10 %}
+                                    <span class="stock-badge low-stock">
+                                        <i class="fas fa-exclamation-triangle"></i> Only {{ product.stock_quantity }} left
+                                    </span>
+                                {% endif %}
+                                
+                                <!-- Seller Badge -->
+                                {% if product.seller %}
+                                    <span class="seller-badge">
+                                        <i class="fas fa-user"></i> Sold by {{ product.seller.username }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="product-info">
+                                <span class="product-category">{{ product.category.name }}</span>
+                                <h3 class="product-title">{{ product.name }}</h3>
+                                <div class="product-price">₹{{ product.price }}</div>
+                                <div class="product-rating">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= product.rating %}
+                                            <i class="fas fa-star"></i>
+                                        {% elif forloop.counter <= product.rating|add:0.5 %}
+                                            <i class="fas fa-star-half-alt"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span>({{ product.total_reviews }})</span>
+                                </div>
+                                <p class="product-description">{{ product.description|truncatewords:15 }}</p>
+                                
+                                {% if user.is_authenticated %}
+                                    {% if product.stock_quantity > 0 %}
+                                        <button class="add-to-cart" data-product-id="{{ product.id }}" onclick="addToCart(this.getAttribute('data-product-id'))">
+                                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                                        </button>
+                                    {% else %}
+                                        <button class="add-to-cart" disabled style="background: #ccc; cursor: not-allowed;">
+                                            <i class="fas fa-ban"></i> Out of Stock
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary">Login to Buy</a>
+                                {% endif %}
+                              
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if products.has_other_pages %}
+                    <div class="pagination">
+                        {% if products.has_previous %}
+                            <a href="?page={{ products.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="page-link">&laquo; Previous</a>
+                        {% endif %}
+                        
+                        {% for num in products.paginator.page_range %}
+                            {% if products.number == num %}
+                                <span class="page-link active">{{ num }}</span>
+                            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                                <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="page-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                             
+                        {% if products.has_next %}
+                            <a href="?page={{ products.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="page-link">Next &raquo;</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="no-products">
+                    <h3>No products found</h3>
+                    <p>Try adjusting your search criteria or browse all categories.</p>
+                    <a href="{% url 'shop' %}" class="btn">View All Products</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCSRFToken() {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.startsWith('csrftoken=')) {
+            return cookie.substring(10);
+        }
+    }
+    return null;
+}
+
+function addToCart(productId) {
+    fetch(`/add-to-cart/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `quantity=1`
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Optionally refresh the page or update cart count
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding to cart.');
+    });
+}
+</script>
+{% endblock %}

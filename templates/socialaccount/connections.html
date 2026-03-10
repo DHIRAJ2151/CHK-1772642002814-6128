@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Connected Accounts - Krushi{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Connected Accounts</h2>
+        <p style="color: #666; margin-bottom: 20px;">Manage your social account connections</p>
+        
+        {% if form.accounts %}
+            <form method="post" action="{% url 'socialaccount_connections' %}">
+                {% csrf_token %}
+                
+                <div style="margin: 20px 0;">
+                    {% for account in form.accounts %}
+                        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center;">
+                                <i class="fab fa-google" style="font-size: 24px; color: #4285f4; margin-right: 15px;"></i>
+                                <div>
+                                    <strong>Google Account</strong>
+                                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">{{ account.get_provider_account }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="account" value="{{ account.id }}" id="account_{{ account.id }}">
+                                <label for="account_{{ account.id }}" style="margin-left: 5px;">Remove</label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <button type="submit" class="btn auth-btn" style="background-color: #f44336;">
+                    <i class="fas fa-unlink"></i> Remove Selected
+                </button>
+            </form>
+        {% else %}
+            <div style="text-align: center; padding: 40px 20px;">
+                <i class="fas fa-link" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+                <p style="color: #666;">No social accounts connected yet.</p>
+            </div>
+        {% endif %}
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="{% url 'home' %}" class="btn auth-btn" style="display: inline-block; width: auto; padding: 12px 30px; background-color: #4CAF50;">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart - Krushi{% endblock %}
+
+{% block body_class %}page-cart{% endblock %}
+
+{% block content %}
+    <!-- Cart Header -->
+    <section class="cart-header">
+        <div class="container">
+            <h1>Your Shopping Cart</h1>
+            <p>Review your items and proceed to checkout</p>
+        </div>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="cart-content">
+        <div class="container">
+            {% if cart_items %}
+                <div class="cart-items">
+                    {% for item in cart_items %}
+                        <div class="cart-item" data-item-id="{{ item.id }}">
+                            <div class="item-image">
+                                <img src="{{ item.product.get_image_src }}" alt="{{ item.product.name }}">
+                            </div>
+                            <div class="item-details">
+                                <h3>{{ item.product.name }}</h3>
+                                <p class="item-category">{{ item.product.category.name }}</p>
+                                <p class="item-description">{{ item.product.description|truncatewords:20 }}</p>
+                                <div class="item-price">₹{{ item.product.price }}</div>
+                            </div>
+                            <div class="item-quantity">
+                                <label for="quantity-{{ item.id }}">Quantity:</label>
+                                <input type="number" id="quantity-{{ item.id }}" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity }}" data-item-id="{{ item.id }}" onchange="updateQuantity(this.dataset.itemId, this.value)">
+                            </div>
+                            <div class="item-total">
+                                <strong>₹{{ item.total_price }}</strong>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn btn-danger" data-item-id="{{ item.id }}" onclick="removeItem(this.dataset.itemId)">Remove</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="cart-summary">
+                    <div class="summary-card">
+                        <h3>Cart Summary</h3>
+                        <div class="summary-row">
+                            <span>Items:</span>
+                            <span>{{ cart.item_count }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>₹{{ cart.total_amount }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>₹{{ cart.total_amount }}</span>
+                        </div>
+                        <a href="{% url 'checkout' %}" class="btn btn-primary checkout-btn">Proceed to Checkout</a>
+                        <a href="{% url 'shop' %}" class="btn btn-secondary">Continue Shopping</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h3>Your cart is empty</h3>
+                    <p>Looks like you haven't added any products to your cart yet.</p>
+                    <a href="{% url 'shop' %}" class="btn btn-primary">Start Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateQuantity(itemId, quantity) {
+    fetch(`/update-cart/${itemId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `quantity=${quantity}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload(); // Refresh to show updated totals
+        } else {
+            alert('Error updating quantity: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating quantity.');
+    });
+}
+
+function removeItem(itemId) {
+    if (confirm('Are you sure you want to remove this item from your cart?')) {
+        window.location.href = `/remove-from-cart/${itemId}/`;
+    }
+}
+</script>
+{% endblock %}

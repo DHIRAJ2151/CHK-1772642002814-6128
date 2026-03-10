@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Product - Krushi{% endblock %}
+{% block body_class %}page-edit-product{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div class="sell-product-header" style="text-align: center; margin-bottom: 40px;">
+        <i class="fas fa-edit" style="font-size: 48px; color: var(--primary-color); margin-bottom: 20px;"></i>
+        <h2>Edit Product</h2>
+        <p style="color: #666; font-size: 16px;">
+            Update your product details
+        </p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" style="margin-bottom: 20px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="sell-product-form">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div class="alert alert-error" style="margin-bottom: 20px;">
+                <strong>Please correct the following errors:</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field|title }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">
+                <i class="fas fa-tag"></i> {{ form.name.label }}
+            </label>
+            {{ form.name }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.category.id_for_label }}">
+                <i class="fas fa-list"></i> {{ form.category.label }}
+            </label>
+            {{ form.category }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">
+                <i class="fas fa-align-left"></i> {{ form.description.label }}
+            </label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="{{ form.price.id_for_label }}">
+                    <i class="fas fa-rupee-sign"></i> {{ form.price.label }}
+                </label>
+                {{ form.price }}
+                <small class="form-help">{{ form.price.help_text }}</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.stock_quantity.id_for_label }}">
+                    <i class="fas fa-boxes"></i> {{ form.stock_quantity.label }}
+                </label>
+                {{ form.stock_quantity }}
+                <small class="form-help">{{ form.stock_quantity.help_text }}</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">
+                <i class="fas fa-image"></i> {{ form.image.label }}
+            </label>
+            
+            <!-- Current Image -->
+            {% if product.image %}
+                <div style="margin-bottom: 15px;">
+                    <p style="font-size: 14px; color: #666; margin-bottom: 8px;">Current Image:</p>
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 300px; max-height: 300px; border-radius: 8px; border: 2px solid #ddd;">
+                </div>
+            {% endif %}
+            
+            {{ form.image }}
+            <small class="form-help">{{ form.image.help_text }} (Leave empty to keep current image)</small>
+            
+            <!-- New Image Preview -->
+            <div id="imagePreview" style="display: none; margin-top: 15px;">
+                <p style="font-size: 14px; color: #666; margin-bottom: 8px;">New Image Preview:</p>
+                <img id="previewImg" src="" alt="Preview" style="max-width: 300px; max-height: 300px; border-radius: 8px; border: 2px solid #ddd;">
+            </div>
+        </div>
+
+        <div class="form-actions" style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+            <button type="submit" class="btn btn-primary" style="padding: 12px 40px;">
+                <i class="fas fa-save"></i> Update Product
+            </button>
+            <a href="{% url 'my_products' %}" class="btn btn-secondary" style="padding: 12px 40px;">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-group label i {
+        color: var(--primary-color);
+        margin-right: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    .form-help {
+        display: block;
+        margin-top: 6px;
+        font-size: 13px;
+        color: #666;
+    }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #45a049 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+
+<script>
+    // Image preview for new image
+    document.getElementById('{{ form.image.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}

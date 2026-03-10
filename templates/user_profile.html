@@ -1,0 +1,448 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - Krushi{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        margin-top: 100px;
+        padding: 40px 0;
+        min-height: calc(100vh - 200px);
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+        color: white;
+        padding: 40px;
+        border-radius: 15px;
+        margin-bottom: 40px;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: var(--primary-color);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-info h1 {
+        margin: 0 0 10px 0;
+        font-size: 2.5rem;
+    }
+
+    .profile-info p {
+        margin: 5px 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        border-top: 4px solid var(--primary-color);
+    }
+
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--light-color);
+    }
+
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--light-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--dark-color);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        color: var(--dark-color);
+        margin: 0;
+    }
+
+    .card-content {
+        color: var(--text-color);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin: 10px 0;
+    }
+
+    .card-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .card-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 600;
+    }
+
+    .card-btn:hover {
+        background: var(--dark-color);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .card-btn.secondary {
+        background: var(--accent-color);
+    }
+
+    .card-btn.secondary:hover {
+        background: var(--secondary-color);
+    }
+
+    .order-list,
+    .product-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0 0 0;
+    }
+
+    .order-item,
+    .product-item {
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: var(--transition);
+    }
+
+    .order-item:hover,
+    .product-item:hover {
+        background: var(--light-color);
+    }
+
+    .order-info,
+    .product-info {
+        flex: 1;
+    }
+
+    .order-number,
+    .product-name {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 5px;
+    }
+
+    .order-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #FFF3CD;
+        color: #856404;
+    }
+
+    .status-confirmed {
+        background: #D1ECF1;
+        color: #0C5460;
+    }
+
+    .status-shipped {
+        background: #D4EDDA;
+        color: #155724;
+    }
+
+    .status-delivered {
+        background: #C3E6CB;
+        color: #155724;
+    }
+
+    .status-cancelled {
+        background: #F8D7DA;
+        color: #721C24;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+        }
+
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .card-actions {
+            flex-direction: column;
+        }
+
+        .card-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-info">
+                <h1>{{ user.get_full_name|default:user.username }}</h1>
+                <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+                {% if user.phone %}
+                <p><i class="fas fa-phone"></i> {{ user.phone }}</p>
+                {% endif %}
+                <p><i class="fas fa-calendar"></i> Member since {{ user.date_joined|date:"F Y" }}</p>
+            </div>
+        </div>
+
+        <!-- Profile Cards Grid -->
+        <div class="profile-grid">
+            <!-- Cart Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h2 class="card-title">Shopping Cart</h2>
+                </div>
+                <div class="card-content">
+                    <div class="stat-number">{{ cart_item_count }}</div>
+                    <p>Items in your cart</p>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'view_cart' %}" class="card-btn">
+                        <i class="fas fa-shopping-cart"></i> View Cart
+                    </a>
+                    <a href="{% url 'shop' %}" class="card-btn secondary">
+                        <i class="fas fa-store"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sell Products Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h2 class="card-title">Sell Products</h2>
+                </div>
+                <div class="card-content">
+                    <div class="stat-number">{{ user_products.count }}</div>
+                    <p>Products listed for sale</p>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'sell_product' %}" class="card-btn">
+                        <i class="fas fa-plus-circle"></i> Add New Product
+                    </a>
+                    <a href="{% url 'my_products' %}" class="card-btn secondary">
+                        <i class="fas fa-box"></i> Manage Products
+                    </a>
+                </div>
+            </div>
+
+            <!-- Orders Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <h2 class="card-title">My Orders</h2>
+                </div>
+                <div class="card-content">
+                    <div class="stat-number">{{ user_orders.count }}</div>
+                    <p>Total orders placed</p>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'my_orders' %}" class="card-btn">
+                        <i class="fas fa-list"></i> View All Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders Section -->
+        {% if user_orders %}
+        <div class="profile-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h2 class="card-title">Recent Orders</h2>
+            </div>
+            <div class="card-content">
+                <ul class="order-list">
+                    {% for order in user_orders %}
+                    <li class="order-item">
+                        <div class="order-info">
+                            <div class="order-number">Order #{{ order.order_number }}</div>
+                            <div>
+                                <span class="order-status status-{{ order.status }}">
+                                    {{ order.get_status_display }}
+                                </span>
+                                <span style="margin-left: 10px; color: #666;">
+                                    ₹{{ order.total_amount }}
+                                </span>
+                            </div>
+                            <small style="color: #999;">{{ order.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <a href="{% url 'order_confirmation' order.id %}" class="card-btn"
+                            style="padding: 8px 16px; font-size: 0.9rem;">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- My Products Section -->
+        {% if user_products %}
+        <div class="profile-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h2 class="card-title">My Listed Products</h2>
+            </div>
+            <div class="card-content">
+                <ul class="product-list">
+                    {% for product in user_products|slice:":5" %}
+                    <li class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">{{ product.name }}</div>
+                            <div>
+                                <span style="color: var(--primary-color); font-weight: 600;">
+                                    ₹{{ product.price }}
+                                </span>
+                                <span style="margin-left: 10px; color: #666;">
+                                    Stock: {{ product.stock_quantity }}
+                                </span>
+                                {% if product.is_approved %}
+                                <span style="margin-left: 10px; color: #28a745;">
+                                    <i class="fas fa-check-circle"></i> Approved
+                                </span>
+                                {% else %}
+                                <span style="margin-left: 10px; color: #ffc107;">
+                                    <i class="fas fa-clock"></i> Pending
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <a href="{% url 'edit_product' product.id %}" class="card-btn"
+                            style="padding: 8px 16px; font-size: 0.9rem;">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if user_products.count > 5 %}
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="{% url 'my_products' %}" class="card-btn">
+                        View All {{ user_products.count }} Products
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Quick Actions -->
+        <div class="profile-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h2 class="card-title">Quick Actions</h2>
+            </div>
+            <div class="card-content">
+                <div class="card-actions">
+                    <a href="{% url 'disease' %}" class="card-btn">
+                        <i class="fas fa-leaf"></i> Disease Detection
+                    </a>
+                    <a href="{% url 'soil_analysis' %}" class="card-btn">
+                        <i class="fas fa-flask"></i> Crop Recommendation
+                    </a>
+                    <a href="{% url 'contact' %}" class="card-btn secondary">
+                        <i class="fas fa-envelope"></i> Contact Support
+                    </a>
+                    <a href="{% url 'rating' %}" class="card-btn secondary">
+                        <i class="fas fa-star"></i> Rate Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

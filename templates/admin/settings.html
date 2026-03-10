@@ -1,0 +1,29 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<div class="page-title">
+    <h2>Site Settings</h2>
+</div>
+
+<div class="card" style="max-width: 800px;">
+    <div class="card-header">
+        <h3 class="card-title">General Preferences</h3>
+    </div>
+
+    <div style="padding: 20px 0;">
+        <div
+            style="background-color: var(--secondary-color); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+            <i class="fas fa-tools fa-3x" style="color: var(--primary-color); margin-bottom: 15px;"></i>
+            <h3 style="color: var(--text-main); font-weight: 600;">Settings Under Construction</h3>
+            <p style="color: var(--text-light); margin-top: 10px;">
+                The settings API components are currently being designed. Configuration modules for site-wide policies,
+                email setup, and automated payment features will appear here.
+            </p>
+            <br>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back to
+                Dashboard</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

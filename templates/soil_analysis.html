@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Soil Analysis & Recommendations - Krushi{% endblock %}
+
+{% block body_class %}page-soil{% endblock %}
+
+{% block content %}
+    <section class="soil-analysis">
+        <div class="container">
+            <h2 class="section-title">Soil Analysis & Crop Recommendations</h2>
+            <p style="text-align: center; margin-bottom: 40px; font-size: 1.1rem;">
+                Get detailed soil analysis and personalized fertilizer recommendations for optimal crop growth
+            </p>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <a href="{% url 'nearest_lab_page' %}" class="btn">Find Nearest Soil Lab</a>
+            </div>
+
+            <div class="analysis-form">
+                <form id="soilForm">
+                    {% csrf_token %}
+                    
+                    
+                    <!-- <div class="form-row" style="align-items: flex-end; gap: 16px;">
+                        <div class="form-group" style="flex: 1 1 60%;">
+                            <label for="soilPdf">Upload Soil Report (PDF) — optional</label>
+                            <input type="file" id="soilPdf" accept="application/pdf" />
+                            <small style="display:block;color:var(--muted-color);margin-top:6px;">We'll extract N, P, K, Temperature, Humidity and Rainfall automatically.</small>
+                        </div>
+                        <div class="form-group" style="flex: 1 1 40%;">
+                            <button type="button" id="ocrExtractBtn" class="btn" style="width: 100%;">Extract from PDF</button>
+                            <div id="ocrStatus" style="margin-top:8px;font-size:0.95rem;"></div>
+                        </div>
+                    </div> -->
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phLevel">pH Level</label>
+                            <input type="number" id="phLevel" step="0.1" min="0" max="14" placeholder="6.0-7.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nitrogen">Nitrogen (N) - ppm</label>
+                            <input type="number" id="nitrogen" min="0" max="100" placeholder="30-50" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phosphorus">Phosphorus (P) - ppm</label>
+                            <input type="number" id="phosphorus" min="0" max="100" placeholder="20-40" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="potassium">Potassium (K) - ppm</label>
+                            <input type="number" id="potassium" min="0" max="100" placeholder="25-50" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="temperature">Soil Temperature (°C)</label>
+                            <input type="number" id="temperature" step="0.1" min="-10" max="60" placeholder="e.g., 18.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="humidity">Humidity (%)</label>
+                            <input type="number" id="humidity" step="0.1" min="0" max="100" placeholder="e.g., 75" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="rainfall">Rainfall (mm/year)</label>
+                            <input type="number" id="rainfall" min="0" max="10000" placeholder="e.g., 1200" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+                        Analyze Soil & Get Crop Recommendations
+                    </button>
+                </form>
+                
+                <!-- Results Section (crop only) -->
+                <div id="soilResults" class="analysis-results">
+                    <h3 style="color: green;">Recommended Crop</h3>
+                    <div id="recommendedCrop"></div>
+                    <div style="margin-top:16px;">
+                        <h3  style="color: green;">Top 3 Recommendations</h3>
+                        <ul id="topRecommendations"></ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div style="margin-top: 60px;">
+                <h3 style="text-align: center; margin-bottom: 30px; color: var(--dark-color);">Why Soil Analysis Matters</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h4>Optimal Growth</h4>
+                        <p>Understand your soil's nutrient content to provide the right fertilizers for maximum crop yield.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h4>Cost Savings</h4>
+                        <p>Apply only the fertilizers your soil needs, reducing waste and saving money.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h4>Environmental Health</h4>
+                        <p>Prevent over-fertilization and protect groundwater from nutrient pollution.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

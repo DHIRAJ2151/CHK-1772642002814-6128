@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Register - Krushi{% endblock %}
+
+{% block content %}
+    <!-- Register Content -->
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2>Create Your Account</h2>
+            
+            <!-- Google Sign-In Button -->
+            <div class="auth-social">
+                <a href="{% provider_login_url 'google' %}" class="google-signin-btn">
+                    <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span>Sign up with Google</span>
+                </a>
+            </div>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="alert alert-error">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email Address</label>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.phone.id_for_label }}">
+                        Phone Number <span class="optional">(Optional)</span>
+                    </label>
+                    {{ form.phone }}
+                    <small class="form-help">
+                        <i class="fas fa-info-circle"></i> {{ form.phone.help_text }}
+                    </small>
+                    <div id="phoneError" class="field-error" style="display: none;"></div>
+                    <div id="phoneSuccess" class="field-success" style="display: none;">
+                        <i class="fas fa-check-circle"></i> Valid phone number
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.address.id_for_label }}">Address</label>
+                    {{ form.address }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                    {{ form.password2 }}
+                </div>
+                <button type="submit" class="btn auth-btn">Create Account</button>
+            </form>
+            <div class="auth-links">
+                <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .google-signin-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px 20px;
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #3c4043;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .google-signin-btn:hover {
+            background: #f8f9fa;
+            border-color: #d2d3d4;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        
+        .google-signin-btn:active {
+            background: #f1f3f4;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .google-icon {
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .divider span {
+            padding: 0 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .optional {
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+        }
+        
+        .form-help {
+            display: block;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .form-help i {
+            color: var(--primary-color);
+            margin-right: 4px;
+        }
+        
+        .field-error {
+            margin-top: 8px;
+            padding: 10px 12px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            color: #856404;
+            font-size: 13px;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .field-error i {
+            margin-right: 6px;
+        }
+        
+        .field-success {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #d4edda;
+            border: 1px solid #28a745;
+            border-radius: 6px;
+            color: #155724;
+            font-size: 13px;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .field-success i {
+            margin-right: 6px;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .phone-valid {
+            border-color: #28a745 !important;
+        }
+        
+        .phone-invalid {
+            border-color: #ffc107 !important;
+        }
+        
+        .phone-examples {
+            margin-top: 8px;
+            padding: 10px 12px;
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #004085;
+        }
+        
+        .phone-examples strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #003366;
+        }
+        
+        .phone-examples code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin: 0 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.getElementById('{{ form.phone.id_for_label }}');
+            const phoneError = document.getElementById('phoneError');
+            const phoneSuccess = document.getElementById('phoneSuccess');
+            
+            if (phoneInput) {
+                // Prevent non-numeric input
+                phoneInput.addEventListener('keypress', function(e) {
+                    // Only allow numbers (0-9)
+                    const charCode = e.which ? e.which : e.keyCode;
+                    if (charCode < 48 || charCode > 57) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+                
+                // Prevent paste of non-numeric content
+                phoneInput.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                    const numericOnly = pastedText.replace(/\D/g, '');
+                    
+                    if (numericOnly) {
+                        // Limit to 10 digits
+                        this.value = numericOnly.substring(0, 10);
+                        // Trigger input event for validation
+                        this.dispatchEvent(new Event('input'));
+                    }
+                });
+                
+                // Limit to 10 digits max
+                phoneInput.addEventListener('input', function(e) {
+                    // Remove any non-numeric characters
+                    let value = this.value.replace(/\D/g, '');
+                    
+                    // Limit to 10 digits
+                    if (value.length > 10) {
+                        value = value.substring(0, 10);
+                    }
+                    
+                    this.value = value;
+                    
+                    // If empty, hide all messages (it's optional)
+                    if (!value) {
+                        phoneError.style.display = 'none';
+                        phoneSuccess.style.display = 'none';
+                        phoneInput.classList.remove('phone-valid', 'phone-invalid');
+                        return;
+                    }
+                    
+                    // Validate: must be exactly 10 digits and start with 6, 7, 8, or 9
+                    if (value.length === 10 && /^[6-9]/.test(value)) {
+                        // Valid
+                        phoneError.style.display = 'none';
+                        phoneSuccess.style.display = 'block';
+                        phoneInput.classList.remove('phone-invalid');
+                        phoneInput.classList.add('phone-valid');
+                    } else {
+                        // Invalid - show helpful error
+                        phoneSuccess.style.display = 'none';
+                        phoneInput.classList.remove('phone-valid');
+                        phoneInput.classList.add('phone-invalid');
+                        
+                        // Determine specific error
+                        let errorMsg = '';
+                        
+                        if (value.length < 10) {
+                            errorMsg = '<i class="fas fa-exclamation-triangle"></i> Need ' + (10 - value.length) + ' more digit' + (10 - value.length > 1 ? 's' : '') + '. Total: 10 digits required.';
+                        } else if (!/^[6-9]/.test(value)) {
+                            errorMsg = '<i class="fas fa-exclamation-triangle"></i> First digit must be 6, 7, 8, or 9.';
+                        }
+                        
+                        phoneError.innerHTML = errorMsg;
+                        phoneError.style.display = 'block';
+                    }
+                });
+                
+                // Show examples on focus
+                phoneInput.addEventListener('focus', function() {
+                    if (!this.value && !document.getElementById('phoneExamples')) {
+                        const examples = document.createElement('div');
+                        examples.id = 'phoneExamples';
+                        examples.className = 'phone-examples';
+                        examples.innerHTML = `
+                            <strong>Enter 10-digit mobile number:</strong>
+                            <code>9876543210</code>
+                            <code>8765432109</code>
+                            <code>7654321098</code>
+                          
+                        `;
+                        this.parentElement.appendChild(examples);
+                    }
+                });
+                
+                // Remove examples on blur if empty
+                phoneInput.addEventListener('blur', function() {
+                    if (!this.value) {
+                        const examples = document.getElementById('phoneExamples');
+                        if (examples) {
+                            examples.remove();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

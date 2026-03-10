@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Connecting to Google - Krushi{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form" style="text-align: center; padding: 40px;">
+        <div style="margin-bottom: 20px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: #4CAF50;"></i>
+        </div>
+        <h2>Connecting to Google</h2>
+        <p style="color: #666; margin-top: 10px;">Please wait while we redirect you to Google...</p>
+        
+        <!-- Auto-submit form to redirect immediately -->
+        <form method="post" action="" id="google-login-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+    </div>
+</div>
+
+<script>
+    // Auto-submit the form immediately to redirect to Google
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('google-login-form').submit();
+    });
+</script>
+{% endblock %}

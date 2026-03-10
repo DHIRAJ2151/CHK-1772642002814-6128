@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Rate Us - Krushi{% endblock %}
+
+{% block body_class %}page-rating{% endblock %}
+
+{% block content %}
+        <!-- Rating Hero Section -->
+        <section class="hero" style="height: 50vh; padding-top: 120px;">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Rate Your Experience</h1>
+                    <p>Your feedback helps us improve and serve you better</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rating Form Section -->
+        <section style="padding: 80px 0;">
+            <div class="container">
+                <div class="rating-container">
+                    <div class="rating-form">
+                        <h2>Share Your Experience</h2>
+                        <p style="text-align: center; margin-bottom: 30px; color: #666;">
+                            We value your opinion! Please take a moment to rate your experience with Krushi and share your thoughts.
+                        </p>
+                        
+                        <form id="ratingForm">
+                            <div class="form-group">
+                                <label>Overall Rating</label>
+                                <div class="rating-stars">
+                                    <input type="radio" name="rating" value="5" id="star5">
+                                    <label for="star5"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="4" id="star4">
+                                    <label for="star4"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="3" id="star3">
+                                    <label for="star3"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="2" id="star2">
+                                    <label for="star2"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="1" id="star1">
+                                    <label for="star1"><i class="fas fa-star"></i></label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rating-name">Your Name (Optional)</label>
+                                <input type="text" id="rating-name" class="form-control" placeholder="Enter your name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rating-comment">Comments (Optional)</label>
+                                <textarea id="rating-comment" class="form-control" rows="4" placeholder="Tell us about your experience, suggestions, or any issues you faced..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn auth-btn">Submit Rating</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Testimonials Section -->
+        <section style="padding: 80px 0; background: var(--light-color);">
+            <div class="container">
+                <h2 class="section-title">What Our Customers Say</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow);">
+                        <div style="color: #FFC107; margin-bottom: 15px;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p style="font-style: italic; margin-bottom: 20px;">"Krushi has transformed my farming practices. Their soil analysis tool helped me optimize fertilizer usage and increase my crop yield by 30%."</p>
+                        <div style="font-weight: 600; color: var(--primary-color);">- Rajesh Patel, Wheat Farmer</div>
+                    </div>
+                    
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow);">
+                        <div style="color: #FFC107; margin-bottom: 15px;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p style="font-style: italic; margin-bottom: 20px;">"The disease detection feature is amazing! I was able to identify and treat a fungal infection early, saving my entire tomato crop."</p>
+                        <div style="font-weight: 600; color: var(--primary-color);">- Priya Sharma, Vegetable Farmer</div>
+                    </div>
+                    
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow);">
+                        <div style="color: #FFC107; margin-bottom: 15px;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p style="font-style: italic; margin-bottom: 20px;">"Excellent customer service and high-quality products. The team at Krushi truly understands the challenges faced by farmers."</p>
+                        <div style="font-weight: 600; color: var(--primary-color);">- Mohan Singh, Dairy Farmer</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Rate Us Section -->
+        <section style="padding: 80px 0;">
+            <div class="container">
+                <h2 class="section-title">Why Your Feedback Matters</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Continuous Improvement</h4>
+                        <p>Your feedback helps us identify areas for improvement and develop better solutions for farmers.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Community Building</h4>
+                        <p>Share your experiences to help other farmers make informed decisions about agricultural solutions.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h4>Innovation</h4>
+                        <p>Your suggestions inspire new features and products that better serve the farming community.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}

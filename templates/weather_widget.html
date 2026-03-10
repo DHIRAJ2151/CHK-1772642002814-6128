@@ -1,0 +1,427 @@
+{% load static %}
+<div id="weather-widget" class="weather-widget" aria-live="polite">
+  <button id="weather-toggle" class="weather-fab" aria-label="Show weather" title="Weather">
+    <i class="fas fa-cloud-sun"></i>
+    <span id="weather-badge" class="ww-badge" hidden>--°</span>
+  </button>
+  <div id="weather-panel" class="weather-panel" hidden>
+    <div class="wp-header">
+      <div class="wp-title"><i class="fas fa-cloud-sun me-1"></i> Weather</div>
+      <button id="weather-close" class="wp-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="wp-section">
+      <div class="wp-section-title">Your location</div>
+      <div id="wp-current" class="wp-card small">Allow location or enter lat/lon below.</div>
+      <div id="wp-detected" class="small" style="margin-top:8px;opacity:.75"></div>
+    </div>
+  </div>
+</div>
+<style>
+  .weather-widget{
+    position:fixed;
+    left:20px;
+    bottom:20px;
+    z-index:9999;
+    font-family:inherit;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  .weather-fab{
+    width:54px;
+    height:54px;
+    border-radius:999px;
+    border:1px solid rgba(0,0,0,.08);
+    background:var(--bs-primary, #0d6efd);
+    color:#fff;
+    box-shadow:0 10px 26px rgba(0,0,0,.18);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    position:relative;
+    transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  }
+  .weather-fab:hover{transform:translateY(-1px);filter:brightness(.98)}
+  .weather-fab:active{transform:translateY(0)}
+  .weather-fab:focus{outline:none}
+  .weather-fab:focus-visible{box-shadow:0 0 0 3px rgba(14,165,233,.35), 0 10px 26px rgba(0,0,0,.18)}
+
+  .ww-badge{
+    position:absolute;
+    top:-7px;
+    right:-7px;
+    background:var(--bs-dark, rgba(15,23,42,.95));
+    color:#fff;
+    border-radius:999px;
+    padding:3px 7px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.2px;
+    box-shadow:0 8px 18px rgba(0,0,0,.18);
+  }
+
+  .weather-panel{
+    position:absolute;
+    left:0;
+    bottom:68px;
+    width:320px;
+    max-width:86vw;
+    background:var(--bs-body-bg, #fff);
+    color:var(--bs-body-color, #212529);
+    border-radius:14px;
+    border:1px solid var(--bs-border-color, rgba(0,0,0,.12));
+    box-shadow:0 18px 44px rgba(0,0,0,.18);
+    overflow:hidden;
+    backdrop-filter: none;
+  }
+
+  .wp-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 10px;
+    background:transparent;
+    border-bottom:0;
+  }
+  .wp-title{font-weight:900;letter-spacing:.2px;font-size:14px;opacity:.9}
+  .wp-close{
+    width:32px;
+    height:32px;
+    border-radius:10px;
+    background:var(--bs-secondary-bg, rgba(0,0,0,.06));
+    border:1px solid var(--bs-border-color, rgba(0,0,0,.12));
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .wp-close:hover{filter:brightness(.98)}
+
+  .wp-section{padding:10px}
+  .wp-section-title{font-weight:900;margin-bottom:8px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;opacity:.7}
+  .wp-card{
+    background:var(--bs-body-bg, #fff);
+    border:1px solid var(--bs-border-color, rgba(0,0,0,.12));
+    border-radius:12px;
+    padding:10px;
+  }
+
+  .wx-card{padding:12px}
+  .wx-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .wx-title{font-weight:800;letter-spacing:.2px}
+  .wx-sub{opacity:.75;font-size:12px;margin-top:2px}
+  .wx-main{display:flex;align-items:center;gap:14px}
+  .wx-icon{width:52px;height:52px;flex:0 0 auto;border-radius:16px;background:var(--bs-secondary-bg, rgba(13,110,253,.10));display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--bs-primary, #0d6efd)}
+  .wx-temp{font-size:40px;line-height:1;font-weight:900;letter-spacing:-1px}
+  .wx-right{min-width:0}
+  .wx-cond{font-weight:800;margin-top:4px}
+  .wx-feels{opacity:.75;font-size:13px;margin-top:2px}
+  .wx-desc{margin-top:10px;opacity:.85;font-size:13px}
+  .wx-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+  .wx-m{background:var(--bs-secondary-bg, rgba(0,0,0,.03));border:1px solid var(--bs-border-color, rgba(0,0,0,.10));border-radius:12px;padding:8px}
+  .wx-m .k{opacity:.75;font-size:11px}
+  .wx-m .v{font-weight:900;margin-top:2px}
+
+  @media (max-width: 420px){
+    .wx-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .wx-temp{font-size:40px}
+    .wx-icon{width:52px;height:52px}
+  }
+
+  .wp-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .wp-input{
+    flex:1 1 96px;
+    border:1px solid var(--bs-border-color, rgba(0,0,0,.12));
+    border-radius:10px;
+    padding:8px 10px;
+    background:var(--bs-body-bg, #fff);
+    color:var(--bs-body-color, #212529);
+  }
+  .wp-input:focus{outline:none}
+  .wp-input:focus-visible{box-shadow:0 0 0 3px rgba(14,165,233,.2)}
+
+  .wp-btn{
+    border:none;
+    border-radius:10px;
+    background:var(--bs-primary, #0d6efd);
+    color:#fff;
+    padding:8px 10px;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .wp-btn:hover{filter:brightness(.98)}
+  .wp-btn.alt{background:var(--bs-secondary, #6c757d)}
+
+  @media (max-width: 420px){
+    .weather-widget{left:14px;bottom:14px}
+    .weather-panel{width:92vw}
+  }
+
+  @media (prefers-color-scheme: dark){
+    .weather-panel{background:var(--bs-body-bg, rgba(15,23,42,.96));color:var(--bs-body-color, #e6edf3);border-color:var(--bs-border-color, rgba(148,163,184,.2))}
+    .wp-header{background:transparent;border-bottom-color:transparent}
+    .wp-close{background:var(--bs-secondary-bg, rgba(148,163,184,.12));border-color:var(--bs-border-color, rgba(148,163,184,.18));color:var(--bs-body-color, #e6edf3)}
+    .wp-card{background:var(--bs-body-bg, rgba(2,6,23,.35));border-color:var(--bs-border-color, rgba(148,163,184,.18))}
+    .wp-input{background:var(--bs-body-bg, rgba(2,6,23,.35));border-color:var(--bs-border-color, rgba(148,163,184,.18));color:var(--bs-body-color, #e6edf3)}
+    .wx-icon{color:var(--bs-primary, #38bdf8);background:var(--bs-secondary-bg, rgba(56,189,248,.16))}
+    .wx-m{background:var(--bs-secondary-bg, rgba(148,163,184,.10));border-color:var(--bs-border-color, rgba(148,163,184,.14))}
+  }
+</style>
+<script>
+(function(){
+  const el={
+    root:document.getElementById('weather-widget'),
+    toggle:document.getElementById('weather-toggle'),
+    badge:document.getElementById('weather-badge'),
+    panel:document.getElementById('weather-panel'),
+    close:document.getElementById('weather-close'),
+    current:document.getElementById('wp-current'),
+    detected:document.getElementById('wp-detected'),
+    
+  };
+  if(!el.root) return;
+
+  function fmt(data){
+    if(!data||typeof data!=='object') return 'No data';
+
+    const tempC = Number.isFinite(data.temp) ? Math.round(data.temp) : null;
+    const feelsC = Number.isFinite(data.feels_like) ? Math.round(data.feels_like) : null;
+    const minC = Number.isFinite(data.min_temp) ? Math.round(data.min_temp) : null;
+    const maxC = Number.isFinite(data.max_temp) ? Math.round(data.max_temp) : null;
+
+    const humidity = (data.humidity!=null ? `${data.humidity}%` : '—');
+    const cloudPct = (data.cloud_pct!=null ? Number(data.cloud_pct) : null);
+    const cloud = (cloudPct==null || !Number.isFinite(cloudPct)) ? '—' : `${cloudPct}%`;
+    const pressure = (data.pressure!=null ? `${data.pressure} mb` : '—');
+
+    const windMs = (data.wind_speed!=null ? Number(data.wind_speed) : null);
+    const windKmh = (windMs==null || !Number.isFinite(windMs)) ? null : (windMs * 3.6);
+    const wind = (windKmh==null) ? '—' : `${Math.round(windKmh)} km/h`;
+
+    const now = Math.floor(Date.now()/1000);
+    const sunrise = Number(data.sunrise);
+    const sunset = Number(data.sunset);
+    const isDay = Number.isFinite(sunrise) && Number.isFinite(sunset) ? (now >= sunrise && now < sunset) : true;
+
+    const cond = (function(){
+      if(!Number.isFinite(cloudPct)) return 'Weather';
+      if(cloudPct >= 85) return 'Overcast';
+      if(cloudPct >= 60) return 'Mostly cloudy';
+      if(cloudPct >= 35) return 'Partly cloudy';
+      return isDay ? 'Mostly clear' : 'Clear';
+    })();
+
+    const iconClass = (function(){
+      if(!Number.isFinite(cloudPct)) return 'fa-cloud';
+      if(cloudPct >= 80) return 'fa-cloud';
+      if(cloudPct >= 40) return 'fa-cloud-sun';
+      return isDay ? 'fa-sun' : 'fa-moon';
+    })();
+
+    const desc = (function(){
+      if(minC!=null && maxC!=null) return `The low will be ${minC}° and the high will be ${maxC}°. `;
+      if(minC!=null) return `The low will be ${minC}°. `;
+      if(maxC!=null) return `The high will be ${maxC}°. `;
+      return '';
+    })() + (cond ? `Currently ${cond.toLowerCase()}.` : '');
+
+    return `
+      <div class="wx-card">
+        <div class="wx-top">
+          <div>
+            <div class="wx-title">Current weather</div>
+            <div class="wx-sub">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+          </div>
+        </div>
+        <div class="wx-main">
+          <div class="wx-icon"><i class="fas ${iconClass}"></i></div>
+          <div class="wx-temp">${tempC==null ? '—' : `${tempC}°C`}</div>
+          <div class="wx-right">
+            <div class="wx-cond">${escapeHtml(cond)}</div>
+            <div class="wx-feels">Feels like ${feelsC==null ? '—' : `${feelsC}°C`}</div>
+          </div>
+        </div>
+        <div class="wx-desc">${escapeHtml(desc)}</div>
+        <div class="wx-metrics">
+          <div class="wx-m"><div class="k">Wind</div><div class="v">${wind}</div></div>
+          <div class="wx-m"><div class="k">Humidity</div><div class="v">${humidity}</div></div>
+          <div class="wx-m"><div class="k">Cloud</div><div class="v">${cloud}</div></div>
+          <div class="wx-m"><div class="k">Pressure</div><div class="v">${pressure}</div></div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function fetchWx(lat,lon){
+    const r=await fetch(`/api/weather?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`);
+    const data=await r.json();
+    if(!r.ok||data.error) throw new Error(data.error||('HTTP '+r.status));
+    return data;
+  }
+
+  function setBadge(temp){
+    if(temp==null||!isFinite(temp)) { el.badge.hidden=true; return; }
+    el.badge.textContent=`${Math.round(temp)}°`;
+    el.badge.hidden=false;
+  }
+
+  function escapeHtml(s){
+    return String(s ?? '').replace(/[&<>"']/g, (c)=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function formatAreaLabel(parts){
+    const out = [];
+    if(parts.city) out.push(parts.city);
+    if(parts.state) out.push(parts.state);
+    if(parts.country) out.push(parts.country);
+    return out.join(', ');
+  }
+
+  function setDetectedInfo(info){
+    if(!el.detected) return;
+    el.detected.textContent = info || '';
+  }
+
+  function fmtAccuracy(meters){
+    if(!Number.isFinite(meters)) return '';
+    if(meters >= 1000) return `${(meters/1000).toFixed(1)} km`;
+    return `${Math.round(meters)} m`;
+  }
+
+  async function reverseGeocode(lat, lon){
+    // Best-effort (no key) reverse geocoding. If blocked, we silently skip.
+    try{
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`;
+      const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      const j = await r.json();
+      const a = j.address || {};
+      const city = a.city || a.town || a.village || a.suburb || a.county;
+      const state = a.state || a.region;
+      const country = a.country;
+      return formatAreaLabel({ city, state, country }) || (j.display_name || '');
+    } catch {
+      return '';
+    }
+  }
+
+  let _currentAreaLoading = false;
+
+  async function loadIpApproxWeather(){
+    el.current.textContent='Finding your area (approx)...';
+    try{
+      const r = await fetch('https://ipapi.co/json/');
+      const j = await r.json();
+      const lat = parseFloat(j.latitude);
+      const lon = parseFloat(j.longitude);
+      if(!Number.isFinite(lat) || !Number.isFinite(lon)){
+        el.current.textContent='Could not detect your area.';
+        setDetectedInfo('');
+        return;
+      }
+
+      const areaLabel = formatAreaLabel({
+        city: j.city,
+        state: j.region,
+        country: j.country_name
+      });
+
+      setDetectedInfo(`Source: IP (approx)  |  Lat: ${lat.toFixed(4)}  Lon: ${lon.toFixed(4)}`);
+      el.current.textContent='Loading weather for your area...';
+      const data = await fetchWx(lat, lon);
+      el.current.innerHTML = `${areaLabel ? `<div style="font-weight:800;margin-bottom:6px">${escapeHtml(areaLabel)}</div>` : ''}${fmt(data)}`;
+      setBadge(data.temp);
+    } catch (e) {
+      el.current.textContent='Could not detect your area.';
+      setDetectedInfo('');
+    }
+  }
+
+  async function loadCurrentAreaWeather(){
+    if(_currentAreaLoading) return;
+    _currentAreaLoading = true;
+
+    if(!navigator.geolocation){
+      el.current.textContent='Geolocation not supported.';
+      _currentAreaLoading = false;
+      return;
+    }
+
+    el.current.textContent='Detecting your location...';
+    navigator.geolocation.getCurrentPosition(async (pos)=>{
+      const lat=pos.coords.latitude;
+      const lon=pos.coords.longitude;
+      const acc=pos.coords.accuracy;
+      setDetectedInfo(`Source: GPS  |  Accuracy: ${fmtAccuracy(acc)}  |  Lat: ${lat.toFixed(4)}  Lon: ${lon.toFixed(4)}`);
+      el.current.textContent='Loading current area weather...';
+      try{
+        const data=await fetchWx(lat,lon);
+        const areaLabel = await reverseGeocode(lat, lon);
+        el.current.innerHTML = `${areaLabel ? `<div style="font-weight:800;margin-bottom:6px">${escapeHtml(areaLabel)}</div>` : ''}${fmt(data)}`;
+        setBadge(data.temp);
+      }catch(e){
+        el.current.textContent=e.message||'Error loading current area weather.';
+      }
+      _currentAreaLoading = false;
+    }, async (err)=>{
+      // Geolocation blocked/failed -> fall back to IP-based approximate location
+      setDetectedInfo(`GPS error: ${err && err.message ? err.message : 'Could not get your location'}`);
+      await loadIpApproxWeather();
+      _currentAreaLoading = false;
+    }, {enableHighAccuracy:true, timeout:20000, maximumAge:0});
+  }
+
+  function setOpen(isOpen){
+    if(isOpen){
+      el.panel.removeAttribute('hidden');
+      loadCurrentAreaWeather();
+    } else {
+      el.panel.setAttribute('hidden','');
+    }
+  }
+  function toggle(){
+    setOpen(el.panel.hasAttribute('hidden'));
+  }
+
+  el.toggle.addEventListener('click',()=>toggle());
+  el.close.addEventListener('click',()=>setOpen(false));
+
+  // Try to prefill badge via geolocation (silent)
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(async (pos)=>{
+      try{ const data=await fetchWx(pos.coords.latitude,pos.coords.longitude); setBadge(data.temp);}catch{}
+    }, async ()=>{
+      // If user denies geolocation, try IP approximate location for badge
+      try{
+        const r = await fetch('https://ipapi.co/json/');
+        const j = await r.json();
+        const lat = parseFloat(j.latitude);
+        const lon = parseFloat(j.longitude);
+        if(Number.isFinite(lat) && Number.isFinite(lon)){
+          const data = await fetchWx(lat, lon);
+          setBadge(data.temp);
+        }
+      } catch {}
+    }, {timeout:3000});
+  } else {
+    // No geolocation; best-effort badge via IP
+    (async ()=>{
+      try{
+        const r = await fetch('https://ipapi.co/json/');
+        const j = await r.json();
+        const lat = parseFloat(j.latitude);
+        const lon = parseFloat(j.longitude);
+        if(Number.isFinite(lat) && Number.isFinite(lon)){
+          const data = await fetchWx(lat, lon);
+          setBadge(data.temp);
+        }
+      } catch {}
+    })();
+  }
+})();
+</script>

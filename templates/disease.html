@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Disease Detection - Krushi{% endblock %}
+
+{% block body_class %}page-disease{% endblock %}
+
+{% block content %}
+    <section class="disease-detection">
+        <div class="container">
+            <h2 class="section-title">Crop/Plant Disease Detection</h2>
+            <p style="text-align: center; margin-bottom: 40px; font-size: 1.1rem;">
+                Upload a photo of your crop/Plant sample to detect diseases and get treatment recommendations
+            </p>
+            
+            <div class="detection-container">
+                <div>
+                    <!-- Upload Area -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p>Click to upload an image or drag and drop</p>
+                        <p style="font-size: 0.9rem; color: #666;">Supports: JPG, PNG, JPEG (Max: 5MB)</p>
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <img id="imagePreview" alt="Preview" style="display: none;">
+                    </div>
+
+                    <div style="text-align: center; margin: 16px 0 0; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <button id="analyzeBtn" class="btn" style="display: none;">
+                            Analyze Image
+                        </button>
+                        <button id="selectAnotherBtn" type="button" class="btn" style="display: none; background: #6c757d;">
+                            Select Another Image
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Area -->
+                <div class="results-area" id="detectionResults">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                        <h3 style="margin: 0;">Analysis Results</h3>
+                        <button id="shareDiseaseBtn" type="button" class="btn" style="display: none; background: #0d6efd; padding: 8px 12px;">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                    <div id="detectionResultsBody">
+                        <p>Upload an image to get started with disease detection.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div style="margin-top: 60px;">
+                <h3 style="text-align: center; margin-bottom: 30px; color: var(--dark-color);">How It Works</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h4>1. Upload Image</h4>
+                        <p>Take a clear photo of the affected crop/Plant part and upload it to our system.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>2. AI Analysis</h4>
+                        <p>Our advanced AI analyzes the image to identify diseases and health issues.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h4>3. Get Results</h4>
+                        <p>Receive detailed diagnosis, treatment recommendations, and product suggestions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Goverment Sides{% endblock %}
+{% block body_class %}page-soil{% endblock %}
+{% block content %}
+<style>
+           
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+        }
+        .container1 {
+            max-width: 900px;
+            margin: auto;
+            padding-top: 50px;
+        }
+        .card {
+            background: #ffffff;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-left: 6px solid #4caf50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            margin-top: 0;
+            color: #1b5e20;
+        }
+        .card p {
+            color: #333;
+        }
+        .card a {
+            text-decoration: none;
+            color: #1565c0;
+            font-weight: bold;
+        }
+        .card a:hover {
+            text-decoration: underline;
+        }
+
+</style>
+    <h1>Agriculture Related Government Schemes</h1>
+
+    <div class="container1">
+
+        <div class="card">
+            <h2>Ministry of Agriculture & Farmers Welfare – Schemes Page</h2>
+            <p>Lists major agriculture schemes with complete details and important dates.</p>
+            <a href="https://agriwelfare.gov.in/en/Major" target="_blank">
+                Visit Agriculture & Farmers Welfare
+            </a>
+        </div>
+
+        <div class="card">
+            <h2>myScheme (National Platform for Government Schemes)</h2>
+            <p>One-stop platform to search government schemes related to Agriculture, Rural & Environment.</p>
+            <a href="https://www.myscheme.gov.in/search/category/Agriculture%2CRural%20%26%20Environment" target="_blank">
+                Visit myScheme Portal
+            </a>
+        </div>
+
+        <div class="card">
+            <h2>National Government Services Portal – Farmers Schemes</h2>
+            <p>Provides information about major schemes for farmers with online service links.</p>
+            <a href="https://services.india.gov.in/service/detail/major-schemes-for-farmers-1" target="_blank">
+                Visit National Government Services Portal
+            </a>
+        </div>
+
+        <div class="card">
+            <h2>Department of Agriculture & Farmers Welfare (iGOT Overview)</h2>
+            <p>Lists schemes and programs under the Department of Agriculture & Farmers Welfare.</p>
+            <a href="https://igod.gov.in/" target="_blank">
+                Visit I-Government Directory
+            </a>
+        </div>
+
+        <div class="card">
+            <h2>Kisan Suvidha Portal</h2>
+            <p>Provides scheme status, weather updates, market prices, and agriculture services.</p>
+            <a href="https://www.kisansuvidha.gov.in/" target="_blank">
+                Visit Kisan Suvidha Portal
+            </a>
+        </div>
+
+    </div>
+{% endblock %}

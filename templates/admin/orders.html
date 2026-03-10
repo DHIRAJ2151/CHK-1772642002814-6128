@@ -1,0 +1,118 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<div class="page-title">
+    <h2>Order Management</h2>
+    <div style="display: flex; gap: 10px;">
+        <form method="GET" style="display: flex; gap: 5px;">
+            <input type="text" name="search" value="{{ search_query }}" class="form-control"
+                placeholder="Search orders by number..." style="margin-bottom: 0; padding: 6px 12px; width: 250px;">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Orders</h3>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order Number</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total Base</th>
+                    <th>Current Status</th>
+                    <th>Update Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><strong>#{{ order.order_number }}</strong></td>
+                    <td>
+                        {{ order.user.username }}<br>
+                        <small style="color: var(--text-light);"><i class="fas fa-phone"></i> {{ order.phone }}</small>
+                    </td>
+                    <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                    <td><strong>₹{{ order.total_amount }}</strong></td>
+                    <td>
+                        <span
+                            class="badge badge-{% if order.status == 'delivered' %}success{% elif order.status == 'pending' %}warning{% elif order.status == 'cancelled' %}danger{% else %}info{% endif %}">
+                            {{ order.status|title }}
+                        </span>
+                    </td>
+                    <td>
+                        <form action="{% url 'admin_order_update' order.id %}" method="POST"
+                            style="display: flex; gap: 5px;">
+                            {% csrf_token %}
+                            <select name="status" class="form-control"
+                                style="margin-bottom: 0; padding: 5px; width: 120px;" onchange="this.form.submit()">
+                                {% if order.status == 'pending' %}
+                                <option value="pending" selected>Pending</option>
+                                {% else %}
+                                <option value="pending">Pending</option>
+                                {% endif %}
+
+                                {% if order.status == 'confirmed' %}
+                                <option value="confirmed" selected>Confirmed</option>
+                                {% else %}
+                                <option value="confirmed">Confirmed</option>
+                                {% endif %}
+
+                                {% if order.status == 'shipped' %}
+                                <option value="shipped" selected>Shipped</option>
+                                {% else %}
+                                <option value="shipped">Shipped</option>
+                                {% endif %}
+
+                                {% if order.status == 'delivered' %}
+                                <option value="delivered" selected>Delivered</option>
+                                {% else %}
+                                <option value="delivered">Delivered</option>
+                                {% endif %}
+
+                                {% if order.status == 'cancelled' %}
+                                <option value="cancelled" selected>Cancelled</option>
+                                {% else %}
+                                <option value="cancelled">Cancelled</option>
+                                {% endif %}
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px;">No orders found matching your search.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
+        <div style="display: flex; gap: 5px;">
+            {% if page_obj.has_previous %}
+            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" class="btn"
+                style="background-color: var(--secondary-color); color: var(--text-main);">&laquo;</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="btn" style="background-color: var(--secondary-color); color: var(--text-main);">&lsaquo;</a>
+            {% endif %}
+
+            <span class="btn" style="background-color: var(--primary-color); color: white;">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="btn" style="background-color: var(--secondary-color); color: var(--text-main);">&rsaquo;</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                class="btn" style="background-color: var(--secondary-color); color: var(--text-main);">&raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

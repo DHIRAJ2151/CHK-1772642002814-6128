@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Krushi - Farming Solutions{% endblock %}
+{% load static %}
+{% block body_class %}page-home{% endblock %}
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg" aria-hidden="true">
+            <span class="hero-bg-img hero-bg-img-1"></span>
+            <span class="hero-bg-img hero-bg-img-2"></span>
+            <span class="hero-bg-img hero-bg-img-3"></span>
+            <span class="hero-bg-img hero-bg-img-4"></span>
+            <span class="hero-bg-img hero-bg-img-5"></span>
+            <span class="hero-bg-img hero-bg-img-6"></span>
+        </div>
+        <div class="hero-bg-overlay" aria-hidden="true"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Modern Solutions for Traditional Farming</h1>
+                <p>Discover high-quality farming equipment, organic fertilizers, and expert advice to maximize your agricultural productivity.</p>
+                <div class="hero-btns">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'shop' %}" class="btn">Shop Now</a>
+                    {% else %}
+                    <a href="{% url 'register' %}" class="btn btn-secondary">Register Now</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Krushi?</h2>
+            <div class="features-grid">
+                <div class="feature-card slide-up" style="animation-delay: 0.2s;">
+                    <div class="feature-icon">
+                        <i class="fas fa-tractor"></i>
+                    </div>
+                    <h3>Quality Equipment</h3>
+                    <p>We provide the latest and most reliable farming equipment from trusted manufacturers worldwide.</p>
+                </div>
+                <div class="feature-card slide-up" style="animation-delay: 0.4s;">
+                    <div class="feature-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Organic Fertilizers</h3>
+                    <p>Our range of organic fertilizers ensures healthy crops without harming the environment.</p>
+                </div>
+                <div class="feature-card slide-up" style="animation-delay: 0.6s;">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Expert Support</h3>
+                    <p>Get 24/7 support from our team of agricultural experts for all your farming needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <h2 class="section-title">About Krushi</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Empowering Farmers Since 2025</h2>
+                    <p>Krushi was founded with a simple mission: to provide farmers with the tools and knowledge they need to succeed in an ever-changing agricultural landscape.</p>
+                    <a href="{% url 'about' %}" class="btn">Learn More</a>
+                </div>
+                <div class="about-img">
+                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Farmers">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

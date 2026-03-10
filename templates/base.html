@@ -1,0 +1,334 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Krushi - Farming Solutions{% endblock %}</title>
+    {% block extra_head %}{% endblock %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=3">
+    {% block extra_css %}{% endblock %}
+    <script>
+        // Global CSRF helpers (Django recommends reading csrftoken from cookie)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function getCSRFToken() { return getCookie('csrftoken'); }
+    </script>
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="{% url 'home' %}" class="logo">
+                    <i class="fas fa-leaf"></i>
+                    Krushi
+                </a>
+                <div class="menu-toggle" id="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'shop' %}">Shop</a></li>
+                    <li><a href="{% url 'disease' %}">Disease Detection</a></li>
+                    <li><a href="{% url 'soil_analysis' %}">Crop Recommendation</a></li>
+                    <li><a href="{% url 'crop_planning' %}">Crop Planning</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'user_profile' %}"><i class="fas fa-user-circle"></i> Profile</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+                <div class="translator" id="translator">
+                    <button class="translator-toggle" id="translator-toggle" aria-label="Translate site"
+                        title="Translate site">
+                        <i class="fas fa-language"></i>
+                        <span class="badge-leaf"><i class="fas fa-leaf" aria-hidden="true"></i></span>
+                    </button>
+                    <div class="translator-dropdown" id="translator-dropdown">
+                        <div id="google_translate_element"></div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Messages -->
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button type="button" class="close-btn" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Krushi</h3>
+                    <p>Providing quality farming solutions to help you grow better crops with less effort and more
+                        profit.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="{% url 'shop' %}">Shop</a></li>
+                        <li><a href="{% url 'disease' %}">Disease Detection</a></li>
+                        <li><a href="{% url 'soil_analysis' %}">Soil Analysis</a></li>
+                        <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                        <li><a href="{% url 'rating' %}">Rate Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Products</h3>
+                    <ul>
+                        <li><a href="{% url 'shop' %}">Organic Fertilizers</a></li>
+                        <li><a href="{% url 'shop' %}">Seeds </a></li>
+                        <li><a href="{% url 'shop' %}">Pesticides</a></li>
+                    </ul>
+
+                    <h3>Goverment Supports</h3>
+                    <ul>
+                        <li><a href="{% url 'govsites' %}">Gov. Portals</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2K26 Krushi. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Widget -->
+    {% if request.path != '/test-chat/' %}
+    {% include 'chat_widget.html' %}
+    {% endif %}<!-- Weather Widget (opposite side of chat) -->
+
+    {% include 'weather_widget.html' %}
+    <!-- Scripts -->
+    <script src="{% static 'js/script.js' %}?v=7"></script>
+    <script type="text/javascript">
+        // Lazy-load Google Translate when opening the dropdown to avoid rendering issues in hidden container
+        var gteLoaded = false;
+        var gteInited = false;
+        function googleTranslateElementInit() {
+            if (gteInited) return;
+            try {
+                new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+                gteInited = true;
+            } catch (e) {
+                console.warn('Translate init retry soon', e);
+                setTimeout(googleTranslateElementInit, 300);
+            }
+        }
+        function loadGoogleTranslate() {
+            if (gteLoaded) {
+                // If the library is loaded but not initialized yet, initialize now
+                if (!gteInited && window.google && google.translate) {
+                    googleTranslateElementInit();
+                }
+                return;
+            }
+            // Define callback for Google script
+            window.googleTranslateElementInit = googleTranslateElementInit;
+            const s = document.createElement('script');
+            s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            s.async = true;
+            s.onerror = function () { console.error('Failed to load Google Translate script'); };
+            document.head.appendChild(s);
+            gteLoaded = true;
+        }
+        // Translator dropdown toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('translator-toggle');
+            const dropdown = document.getElementById('translator-dropdown');
+            if (!toggle || !dropdown) return;
+
+            // Persist selected language across navigation:
+            // If a googtrans cookie exists (user previously selected a language), load the script
+            // immediately so the current page is translated without requiring another click.
+            const hasGoogTransCookie = document.cookie.split(';').some(c => c.trim().startsWith('googtrans='));
+            if (hasGoogTransCookie) {
+                requestAnimationFrame(() => {
+                    loadGoogleTranslate();
+                });
+            }
+
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                // Open first so container is visible, then load/initialize
+                const willOpen = !dropdown.classList.contains('open');
+                dropdown.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', dropdown.classList.contains('open'));
+                if (willOpen) {
+                    // Defer to next frame to ensure visibility before init
+                    requestAnimationFrame(() => {
+                        loadGoogleTranslate();
+                    });
+                }
+            });
+
+            document.addEventListener('click', function (e) {
+                // If the Google language menu iframe is present, keep dropdown open
+                const menuFrame = document.querySelector('.goog-te-menu-frame.skiptranslate');
+                if (menuFrame) return;
+                // Close only if clicking truly outside toggle and dropdown
+                if (!dropdown.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) {
+                    dropdown.classList.remove('open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close dropdown shortly after a language is chosen by observing the menu iframe removal
+            const observer = new MutationObserver(() => {
+                const menuFrame = document.querySelector('.goog-te-menu-frame.skiptranslate');
+                if (!menuFrame && dropdown.classList.contains('open')) {
+                    // Menu closed -> close our dropdown too
+                    dropdown.classList.remove('open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // UX Enhancements: Scroll Animations
+            const fadeElements = document.querySelectorAll('.card, .product-card, .feature-card, section h2, .about-content > div');
+            fadeElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            });
+
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        scrollObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeElements.forEach(el => scrollObserver.observe(el));
+
+            // UX Enhancements: Lazy Load Images
+            const images = document.querySelectorAll('img:not([loading])');
+            images.forEach(img => {
+                img.setAttribute('loading', 'lazy');
+                // Optional skeleton loading class toggle
+                img.classList.add('loading-skeleton');
+                img.onload = () => img.classList.remove('loading-skeleton');
+            });
+
+            // UX Enhancements: Auto-dismiss alerts smoothly
+            const alerts = document.querySelectorAll('.messages-container .alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    alert.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    setTimeout(() => alert.remove(), 400);
+                }, 4000);
+            });
+
+            // UX Enhancements: Real-time form input focus/blur states 
+            const inputs = document.querySelectorAll('input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]), textarea, select');
+            inputs.forEach(input => {
+                // Initial check
+                if (input.value.trim() !== '') {
+                    input.parentElement.classList.add('has-value');
+                }
+
+                input.addEventListener('focus', () => {
+                    input.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', () => {
+                    input.parentElement.classList.remove('focused');
+                    if (input.value.trim() !== '') {
+                        input.parentElement.classList.add('has-value');
+                    } else {
+                        input.parentElement.classList.remove('has-value');
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes skeletonLoading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Real-time input improvements */
+        input:focus:invalid,
+        textarea:focus:invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        input:focus:valid:not(:placeholder-shown),
+        textarea:focus:valid:not(:placeholder-shown) {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+    </style>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

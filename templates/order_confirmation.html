@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmation - Krushi{% endblock %}
+
+{% block content %}
+    <!-- Order Confirmation Header -->
+    <section class="order-confirmation-header">
+        <div class="container">
+            <div class="confirmation-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Order Confirmed!</h1>
+            <p>Thank you for your purchase. Your order has been successfully placed.</p>
+        </div>
+    </section>
+
+    <!-- Order Details -->
+    <section class="order-details">
+        <div class="container">
+            <div class="order-info-card">
+                <h3>Order Information</h3>
+                <div class="order-info-grid">
+                    <div class="info-row">
+                        <span class="label">Order Number:</span>
+                        <span class="value">{{ order.order_number }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Order Date:</span>
+                        <span class="value">{{ order.created_at|date:"F j, Y" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Order Status:</span>
+                        <span class="value status-{{ order.status }}">{{ order.get_status_display }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Total Amount:</span>
+                        <span class="value">₹{{ order.total_amount }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-items-card">
+                <h3>Order Items</h3>
+                <div class="order-items">
+                    {% for item in order.items.all %}
+                        <div class="order-item">
+                            <div class="item-image">
+                                <img src="{{ item.product.get_image_src }}" alt="{{ item.product.name }}">
+                            </div>
+                            <div class="item-details">
+                                <h4>{{ item.product.name }}</h4>
+                                <p class="item-category">{{ item.product.category.name }}</p>
+                                <p class="item-price">₹{{ item.price }} x {{ item.quantity }}</p>
+                            </div>
+                            <div class="item-total">
+                                <strong>₹{{ item.total_price }}</strong>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="shipping-info-card">
+                <h3>Shipping Information</h3>
+                <div class="shipping-info">
+                    <div class="info-row">
+                        <span class="label">Shipping Address:</span>
+                        <span class="value">{{ order.shipping_address }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Phone Number:</span>
+                        <span class="value">{{ order.phone }}</span>
+                    </div>
+                    {% if order.notes %}
+                        <div class="info-row">
+                            <span class="label">Order Notes:</span>
+                            <span class="value">{{ order.notes }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="next-steps">
+                <h3>What's Next?</h3>
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4>Confirmation Email</h4>
+                        <p>You'll receive a confirmation email with your order details shortly.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h4>Order Processing</h4>
+                        <p>We'll start processing your order and update you on the shipping status.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <h4>Delivery</h4>
+                        <p>Your order will be delivered to the address you provided within 3-5 business days.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'my_orders' %}" class="btn btn-primary">View My Orders</a>
+                <a href="{% url 'shop' %}" class="btn btn-secondary">Continue Shopping</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}
