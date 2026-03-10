@@ -319,6 +319,7 @@
       max-width: 1400px;
       margin: 0 auto;
       padding: 20px 30px;
+      position: relative;
     }
 
     /* page container */
@@ -523,6 +524,254 @@
       border-top: 3px solid #4a7a4a;
     }
 
+    /* ===== FLOATING CHATBOT LOGO - FARMING THEMED ===== */
+    .chatbot-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      cursor: pointer;
+      animation: chatbotPulse 2s infinite;
+    }
+
+    @keyframes chatbotPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .chatbot-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(145deg, #1a4d2a, #2d6d3b);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(0, 40, 0, 0.4);
+      border: 3px solid #7fb07f;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chatbot-icon::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .chatbot-icon:hover::before {
+      opacity: 1;
+    }
+
+    .chatbot-icon:hover {
+      transform: rotate(10deg) scale(1.15);
+      box-shadow: 0 20px 40px rgba(46, 125, 50, 0.6);
+      border-color: #c8e6c9;
+    }
+
+    .chatbot-icon i {
+      font-size: 3rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+    }
+
+    .chatbot-icon:hover i {
+      transform: scale(1.1) rotate(-5deg);
+    }
+
+    /* Multiple farming icon options (hidden, toggled via JS) */
+    .chatbot-icon.farming-icon-1 i { content: "\f6e4"; } /* wheat */
+    .chatbot-icon.farming-icon-2 i { content: "\f6e3"; } /* seed */
+    .chatbot-icon.farming-icon-3 i { content: "\f787"; } /* tractor */
+    .chatbot-icon.farming-icon-4 i { content: "\f043"; } /* droplet */
+    .chatbot-icon.farming-icon-5 i { content: "\f06c"; } /* leaf */
+
+    /* Chatbot panel */
+    .chatbot-panel {
+      position: fixed;
+      bottom: 120px;
+      right: 30px;
+      width: 350px;
+      height: 500px;
+      background: rgba(245, 255, 235, 0.95);
+      backdrop-filter: blur(15px);
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0, 40, 0, 0.4);
+      border: 2px solid #7fb07f;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1001;
+      animation: slideInChat 0.4s ease;
+    }
+
+    @keyframes slideInChat {
+      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .chatbot-panel.open {
+      display: flex;
+    }
+
+    .chatbot-header {
+      background: linear-gradient(135deg, #1a4d2a, #2d6d3b);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #7fb07f;
+    }
+
+    .chatbot-header h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chatbot-header h3 i {
+      font-size: 1.5rem;
+      color: #ffd966;
+    }
+
+    .chatbot-header button {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chatbot-header button:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: rotate(90deg);
+    }
+
+    .chatbot-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      animation: messagePop 0.3s ease;
+    }
+
+    @keyframes messagePop {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .bot-message {
+      background: rgba(46, 125, 50, 0.2);
+      border: 1px solid #7fb07f;
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+    }
+
+    .user-message {
+      background: linear-gradient(135deg, #1a4d2a, #2d6d3b);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+    }
+
+    .chatbot-input {
+      padding: 20px;
+      border-top: 1px solid #7fb07f;
+      display: flex;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .chatbot-input input {
+      flex: 1;
+      background: white;
+      border: 1px solid #97c28b;
+      border-radius: 40px;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .chatbot-input button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      padding: 0;
+      background: linear-gradient(145deg, #1a4d2a, #2d6d3b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .chatbot-input button:hover {
+      transform: scale(1.1) rotate(15deg);
+    }
+
+    /* Icon selector (hidden, for demo purposes) */
+    .icon-selector {
+      position: fixed;
+      bottom: 120px;
+      right: 120px;
+      background: white;
+      border-radius: 20px;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      z-index: 1002;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    .icon-option {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1a4d2a, #2d6d3b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+    .icon-option:hover {
+      transform: scale(1.1);
+      border-color: #ffd966;
+    }
+    .icon-option i {
+      font-size: 1.5rem;
+    }
+
     /* ===== HERO SECTION WITH CHANGING BACKGROUND ===== */
     .hero-section {
       position: relative;
@@ -676,12 +925,18 @@
       .navbar { padding: 12px 20px; }
       .nav-link { padding: 6px 12px; font-size: 0.85rem; }
       .logo { font-size: 1.7rem; }
+      .chatbot-panel { width: 300px; right: 20px; }
+      .chatbot-icon { width: 70px; height: 70px; }
+      .chatbot-icon i { font-size: 2.5rem; }
     }
     
     @media (max-width: 900px) {
       .navbar { flex-direction: column; gap: 10px; }
       .navbar-right { width: 100%; justify-content: center; }
       .footer-links { gap: 15px; flex-direction: column; align-items: center; }
+      .chatbot-panel { width: 280px; bottom: 100px; }
+      .chatbot-icon { width: 60px; height: 60px; }
+      .chatbot-icon i { font-size: 2rem; }
     }
   </style>
 </head>
@@ -697,10 +952,6 @@
       <a class="nav-link" data-page="cropAI">Crop Recommendation</a>
       <a class="nav-link" data-page="soil">Soil Analysis</a>
       <a class="nav-link" data-page="disease">Disease Detection</a>
-      {% comment %} <a class="nav-link" data-page="marketplace">Marketplace</a> {% endcomment %}
-      {% comment %} <a class="nav-link" data-page="learning">Learning</a> {% endcomment %}
-      {% comment %} <a class="nav-link" data-page="schemes">Schemes</a> {% endcomment %}
-      {% comment %} <a class="nav-link" data-page="contact">Contact</a> {% endcomment %}
     </div>
     <div class="navbar-right">
       <!-- language dropdown -->
@@ -755,6 +1006,42 @@
       <p>Product: <span id="modalProduct">-</span></p>
       <button id="submitDelivery">Submit & Proceed</button>
       <button onclick="closeModal('deliveryModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- FLOATING CHATBOT LOGO - FARMING THEMED -->
+  <div class="chatbot-float" id="chatbotFloat">
+    <div class="chatbot-icon" id="chatbotIcon">
+      <i class="fas fa-seedling" id="chatbotIconElement"></i> <!-- Default: seedling -->
+    </div>
+  </div>
+
+  <!-- Icon selector (can be hidden in production) -->
+  <div class="icon-selector" style="display: none;" id="iconSelector">
+    <div class="icon-option" onclick="changeChatbotIcon('seedling')"><i class="fas fa-seedling"></i></div>
+    <div class="icon-option" onclick="changeChatbotIcon('wheat')"><i class="fas fa-wheat-alt"></i></div>
+    <div class="icon-option" onclick="changeChatbotIcon('tractor')"><i class="fas fa-tractor"></i></div>
+    <div class="icon-option" onclick="changeChatbotIcon('leaf')"><i class="fas fa-leaf"></i></div>
+    <div class="icon-option" onclick="changeChatbotIcon('droplet')"><i class="fas fa-tint"></i></div>
+  </div>
+
+  <!-- CHATBOT PANEL -->
+  <div class="chatbot-panel" id="chatbotPanel">
+    <div class="chatbot-header">
+      <h3><i class="fas fa-seedling" id="headerIcon"></i> Krushi Assistant</h3>
+      <button id="closeChatbot"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="message bot-message">
+        👋 Namaste! I'm your Krushi farming assistant. How can I help you today?
+      </div>
+      <div class="message bot-message">
+        🌱 Ask me about crops, weather, soil health, pest control, or government schemes!
+      </div>
+    </div>
+    <div class="chatbot-input">
+      <input type="text" id="chatInput" placeholder="Type your farming question...">
+      <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
 
@@ -872,67 +1159,6 @@
         </div>
       </div>
     </section>
-
-    <section id="marketplace" class="page">
-      <h2>🛒 Farmer Marketplace</h2>
-      <div class="card-grid">
-        <div class="glass-card"><img src="https://images.unsplash.com/photo-1595855759920-86582396756a?w=200&auto=format" style="width:100%; border-radius:24px;"><h4>Tomato 50kg ₹1200</h4><button class="buyNowBtn" data-product="Tomato 50kg">Buy Now</button></div>
-        <div class="glass-card"><img src="https://images.unsplash.com/photo-1595855759920-86582396756a?w=200&auto=format" style="width:100%; border-radius:24px;"><h4>Potato 80kg ₹960</h4><button class="buyNowBtn" data-product="Potato 80kg">Buy Now</button></div>
-        <div class="glass-card"><img src="https://images.unsplash.com/photo-1595855759920-86582396756a?w=200&auto=format" style="width:100%; border-radius:24px;"><h4>Onion 60kg ₹720</h4><button class="buyNowBtn" data-product="Onion 60kg">Buy Now</button></div>
-      </div>
-    </section>
-
-    <section id="learning" class="page">
-      <h2>📚 Krushi Learning Center</h2>
-      <div class="card-grid">
-        <div class="glass-card">
-          <iframe width="100%" height="180" src="https://www.youtube.com/embed/jGPdxkd0XXk" title="Farming video" frameborder="0" allowfullscreen></iframe>
-          <h4>Modern irrigation</h4>
-        </div>
-        <div class="glass-card">
-          <iframe width="100%" height="180" src="https://www.youtube.com/embed/3RqjP7RcArU" title="Crop rotation" frameborder="0" allowfullscreen></iframe>
-          <h4>Crop rotation guide</h4>
-        </div>
-        <div class="glass-card">
-          <iframe width="100%" height="180" src="https://www.youtube.com/embed/LgLMEfPpFkI" title="Organic farming" frameborder="0" allowfullscreen></iframe>
-          <h4>Organic methods</h4>
-        </div>
-      </div>
-    </section>
-
-    <section id="schemes" class="page">
-      <h2>🏛️ Government Schemes</h2>
-      <div class="card-grid">
-        <div class="glass-card">
-          <h3>PM-KISAN</h3>
-          <p>💰 ₹6000/year for small farmers</p>
-          <a href="https://pmkisan.gov.in/" target="_blank"><button>Visit Official Site</button></a>
-          <button onclick="alert('PM-KISAN application form would open')">Fill Form</button>
-        </div>
-        <div class="glass-card">
-          <h3>Fasal Bima Yojana</h3>
-          <p>🌾 Crop insurance at low premium</p>
-          <a href="https://pmfby.gov.in/" target="_blank"><button>Visit Official Site</button></a>
-          <button onclick="alert('Fasal Bima application form would open')">Fill Form</button>
-        </div>
-        <div class="glass-card">
-          <h3>Soil Health Card</h3>
-          <p>🧪 Free soil testing scheme</p>
-          <a href="https://soilhealth.dac.gov.in/" target="_blank"><button>Visit Official Site</button></a>
-          <button onclick="alert('Soil Health Card application would open')">Apply Now</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="page">
-      <h2><i class="fas fa-phone-alt"></i> Contact & Support</h2>
-      <div class="glass-card" style="text-align:center;">
-        <p style="font-size:1.3rem;">📞 Kisan Call Center: 1800-180-1551</p>
-        <p style="font-size:1.3rem;">📧 support@krushi.in</p>
-        <p style="font-size:1.3rem;">🌐 www.krushi.in</p>
-        <button onclick="alert('Contact form would open')">Send Message</button>
-      </div>
-    </section>
   </div>
 
   <!-- PROPER CENTERED FOOTER -->
@@ -944,10 +1170,6 @@
         <a href="#" onclick="switchPage('cropAI'); return false;">Crop AI</a>
         <a href="#" onclick="switchPage('soil'); return false;">Soil</a>
         <a href="#" onclick="switchPage('disease'); return false;">Disease</a>
-        <a href="#" onclick="switchPage('marketplace'); return false;">Market</a>
-        <a href="#" onclick="switchPage('learning'); return false;">Learning</a>
-        <a href="#" onclick="switchPage('schemes'); return false;">Schemes</a>
-        <a href="#" onclick="switchPage('contact'); return false;">Contact</a>
       </div>
       <div class="footer-social">
         <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -963,7 +1185,7 @@
     </div>
   </footer>
 
-  <script>
+` `  <script>
     // ========== PAGE SWITCHING with background update ==========
     function switchPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
@@ -976,10 +1198,6 @@
       else if (pageId === 'cropAI') bgElement.classList.add('crop-bg');
       else if (pageId === 'soil') bgElement.classList.add('soil-bg');
       else if (pageId === 'disease') bgElement.classList.add('disease-bg');
-      else if (pageId === 'marketplace') bgElement.classList.add('market-bg');
-      else if (pageId === 'learning') bgElement.classList.add('learning-bg');
-      else if (pageId === 'schemes') bgElement.classList.add('schemes-bg');
-      else if (pageId === 'contact') bgElement.classList.add('contact-bg');
 
       // Scroll to top when switching pages
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1067,28 +1285,127 @@
         if (lang === 'mr') {
           document.querySelectorAll('h2').forEach(h => {
             let text = h.innerHTML;
-            text = text.replace('Crop', 'पीक').replace('Learning', 'शिक्षण').replace('Soil', 'माती').replace('Disease', 'रोग').replace('Marketplace', 'बाजार').replace('Schemes', 'योजना').replace('Contact', 'संपर्क');
+            text = text.replace('Crop', 'पीक').replace('Soil', 'माती').replace('Disease', 'रोग');
             h.innerHTML = text;
           });
           alert('Language switched to मराठी (demo)');
         } else if (lang === 'hi') {
           document.querySelectorAll('h2').forEach(h => {
             let text = h.innerHTML;
-            text = text.replace('Crop', 'फसल').replace('Learning', 'शिक्षा').replace('Soil', 'मिट्टी').replace('Disease', 'रोग').replace('Marketplace', 'बाजार').replace('Schemes', 'योजनाएं').replace('Contact', 'संपर्क');
+            text = text.replace('Crop', 'फसल').replace('Soil', 'मिट्टी').replace('Disease', 'रोग');
             h.innerHTML = text;
           });
           alert('Language switched to हिंदी (demo)');
         } else {
           document.querySelectorAll('h2').forEach(h => {
             let text = h.innerHTML;
-            text = text.replace('पीक', 'Crop').replace('शिक्षण', 'Learning').replace('माती', 'Soil').replace('रोग', 'Disease').replace('बाजार', 'Marketplace').replace('योजना', 'Schemes').replace('संपर्क', 'Contact');
-            text = text.replace('फसल', 'Crop').replace('शिक्षा', 'Learning').replace('मिट्टी', 'Soil').replace('रोग', 'Disease').replace('बाजार', 'Marketplace').replace('योजनाएं', 'Schemes').replace('संपर्क', 'Contact');
+            text = text.replace('पीक', 'Crop').replace('माती', 'Soil').replace('रोग', 'Disease');
+            text = text.replace('फसल', 'Crop').replace('मिट्टी', 'Soil').replace('रोग', 'Disease');
             h.innerHTML = text;
           });
           alert('Language switched to English (demo)');
         }
       });
     });
+
+    // ========== CHATBOT FUNCTIONALITY ==========
+    const chatbotFloat = document.getElementById('chatbotFloat');
+    const chatbotPanel = document.getElementById('chatbotPanel');
+    const closeChatbot = document.getElementById('closeChatbot');
+    const sendChat = document.getElementById('sendChat');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatbotIcon = document.getElementById('chatbotIcon');
+    const chatbotIconElement = document.getElementById('chatbotIconElement');
+    const headerIcon = document.getElementById('headerIcon');
+
+    // Toggle chatbot panel on logo click
+    chatbotFloat.addEventListener('click', () => {
+      chatbotPanel.classList.toggle('open');
+    });
+
+    // Close chatbot panel
+    closeChatbot.addEventListener('click', () => {
+      chatbotPanel.classList.remove('open');
+    });
+
+    // Send message function
+    function sendMessage() {
+      const message = chatInput.value.trim();
+      if (message === '') return;
+
+      // Add user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message user-message';
+      userMsg.textContent = message;
+      chatMessages.appendChild(userMsg);
+
+      // Clear input
+      chatInput.value = '';
+
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      // Simulate bot response after delay
+      setTimeout(() => {
+        const farmingResponses = [
+          "🌾 For wheat cultivation, the ideal soil pH is between 6.0 and 7.5.",
+          "🌽 Maize requires high nitrogen levels. Consider applying urea at 80-100 kg/hectare.",
+          "🍅 Tomato crops need phosphorus for root development. Add DAP before planting.",
+          "💧 Drip irrigation can save up to 40% water compared to traditional methods.",
+          "🌱 Soybean is a legume that fixes nitrogen in the soil, great for crop rotation.",
+          "🚜 The PM-KISAN scheme provides ₹6000/year to small farmers. Apply online!",
+          "🐛 For pest control, neem oil is an effective organic solution.",
+          "🌿 Soil testing every 2 years helps maintain optimal nutrient levels.",
+          "☔ Monsoon arrives in June. Prepare your fields for Kharif crops.",
+          "💰 Current mandi price for cotton in Maharashtra is ₹6200/quintal."
+        ];
+        const randomResponse = farmingResponses[Math.floor(Math.random() * farmingResponses.length)];
+        
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot-message';
+        botMsg.textContent = randomResponse;
+        chatMessages.appendChild(botMsg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+    }
+
+    // Send on button click
+    sendChat.addEventListener('click', sendMessage);
+
+    // Send on Enter key
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // Function to change chatbot icon
+    window.changeChatbotIcon = function(iconType) {
+      const iconMap = {
+        'seedling': 'fa-seedling',
+        'wheat': 'fa-wheat-alt',
+        'tractor': 'fa-tractor',
+        'leaf': 'fa-leaf',
+        'droplet': 'fa-tint'
+      };
+      
+      // Remove all icon classes
+      chatbotIconElement.className = '';
+      headerIcon.className = '';
+      
+      // Add new icon class
+      const iconClass = iconMap[iconType] || 'fa-seedling';
+      chatbotIconElement.classList.add('fas', iconClass);
+      headerIcon.classList.add('fas', iconClass);
+      
+      // Save preference
+      localStorage.setItem('chatbotIcon', iconType);
+    };
+
+    // Load saved icon preference
+    const savedIcon = localStorage.getItem('chatbotIcon') || 'seedling';
+    changeChatbotIcon(savedIcon);
 
     // ========== ENHANCED CROP PREDICTION based on nutrients ==========
     document.getElementById('analyzeNutrientsBtn')?.addEventListener('click', function() {
@@ -1241,43 +1558,9 @@
       }
     });
 
-    // ========== BUY NOW modal ==========
-    const deliveryModal = document.getElementById('deliveryModal');
-    const modalProductSpan = document.getElementById('modalProduct');
-    
-    document.querySelectorAll('.buyNowBtn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const product = e.target.getAttribute('data-product') || 'item';
-        modalProductSpan.innerText = product;
-        deliveryModal.style.display = 'flex';
-      });
-    });
-
-    document.getElementById('submitDelivery')?.addEventListener('click', function() {
-      const name = document.getElementById('deliveryName').value;
-      if (name) {
-        alert(`Order submitted! Thank you ${name} (demo)`);
-        closeModal('deliveryModal');
-      } else {
-        alert('Please fill delivery details');
-      }
-    });
-
     // ========== INITIALIZE ==========
     updateSoilScore();
     window.switchPage = switchPage;
-
-    // Ensure all buttons work (additional handlers for scheme buttons)
-    document.querySelectorAll('#schemes button').forEach(btn => {
-      if (!btn.hasAttribute('onclick')) {
-        btn.addEventListener('click', (e) => {
-          if (!e.target.closest('a')) {
-            alert('Scheme action triggered (demo)');
-          }
-        });
-      }
-    });
   </script>
 </body>
 </html>
